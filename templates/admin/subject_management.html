@@ -1,0 +1,127 @@
+{% extends "admin/dashboard.html" %}
+{% block title %}subject{% endblock %}
+{% block content %}
+<style>
+    .container p{
+        text-align: center;
+    }
+    iframe {
+        width: 40%;
+        height: 500px; 
+        border: none;
+        position: absolute; /* Position the iframe absolutely */
+        top: 50px; /* Adjust this value as needed to control where the iframe appears */
+        left: 0;
+        right: 0;
+        z-index: 9999; /* Ensure the iframe is on top */
+        display: none;  /* Initially hide the iframe */ 
+    }
+    .prim-btn{
+        background-color: green;
+        margin:600px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding:12px;
+        border:1px solid white;
+        border-radius: 6px;
+        padding-left:70px;
+        padding-right: 70px;
+        display: block;
+        color:white;
+        font-size: 18px;
+}
+</style>
+<button class="prim-btn">Add New Subject</button>
+<div style=" display: grid;grid-template-columns: auto auto auto auto;">
+<div class="container" style="padding-left: 40px;padding-right:40px;">
+    <p>Appdev -1</p>
+    <p>No of chapters : 30</p>
+    <p>No of quizzes :30</p>
+    
+    <button class="btn" style="display:inline-block;margin:15px;" id="viewButton">View</button>
+    <button class="btn" style="display:inline-block;margin:15px;">Add chapter</button>
+    <button class="btn" style="display:inline-block;margin:15px;background-color:red;">Delete</button>
+    
+    <!-- Iframe that will show up after clicking View -->
+    <iframe id="subjectIframe" src="{{ url_for('admin.view_sub') }}"></iframe>
+</div>
+<div class="container" style="padding-left: 40px;padding-right:40px;">
+    <p>Appdev -1</p>
+    <p>No of chapters : 30</p>
+    <p>No of quizzes :30</p>
+    
+    <button class="btn" style="display:inline-block;margin:15px;" id="viewButton">View</button>
+    <button class="btn" style="display:inline-block;margin:15px;">Add chapter</button>
+    <button class="btn" style="display:inline-block;margin:15px;background-color:red;">Delete</button>
+    
+    <!-- Iframe that will show up after clicking View -->
+    <iframe id="subjectIframe" src="{{ url_for('admin.view_sub') }}"></iframe>
+</div>
+<div class="container" style="padding-left: 40px;padding-right:40px;">
+    <p>Appdev -1</p>
+    <p>No of chapters : 30</p>
+    <p>No of quizzes :30</p>
+    
+    <button class="btn" style="display:inline-block;margin:15px;" id="viewButton">View</button>
+    <button class="btn" style="display:inline-block;margin:15px;">Add chapter</button>
+    <button class="btn" style="display:inline-block;margin:15px;background-color:red;">Delete</button>
+    
+    <!-- Iframe that will show up after clicking View -->
+    <iframe id="subjectIframe" src="{{ url_for('admin.view_sub') }}"></iframe>
+</div>
+<div class="container" style="padding-left: 40px;padding-right:40px;">
+    <p>Appdev -1</p>
+    <p>No of chapters : 30</p>
+    <p>No of quizzes :30</p>
+    
+    <button class="btn" style="display:inline-block;margin:15px;" id="viewButton">View</button>
+    <button class="btn" style="display:inline-block;margin:15px;">Add chapter</button>
+    <button class="btn" style="display:inline-block;margin:15px;background-color:red;">Delete</button>
+    
+    <!-- Iframe that will show up after clicking View -->
+    <iframe id="subjectIframe" src="{{ url_for('admin.view_sub') }}"></iframe>
+</div>
+<div class="container" style="padding-left: 40px;padding-right:40px;">
+    <p>Appdev -1</p>
+    <p>No of chapters : 30</p>
+    <p>No of quizzes :30</p>
+    
+    <button class="btn" style="display:inline-block;margin:15px;" id="viewButton">View</button>
+    <button class="btn" style="display:inline-block;margin:15px;">Add chapter</button>
+    <button class="btn" style="display:inline-block;margin:15px;background-color:red;">Delete</button>
+    
+    <!-- Iframe that will show up after clicking View -->
+    <iframe id="subjectIframe" src="{{ url_for('admin.view_sub') }}"></iframe>
+</div>
+<div class="container" style="padding-left: 40px;padding-right:40px;">
+    <p>Appdev -1</p>
+    <p>No of chapters : 30</p>
+    <p>No of quizzes :30</p>
+    
+    <button class="btn" style="display:inline-block;margin:15px;" id="viewButton">View</button>
+    <button class="btn" style="display:inline-block;margin:15px;">Add chapter</button>
+    <button class="btn" style="display:inline-block;margin:15px;background-color:red;">Delete</button>
+    
+    <!-- Iframe that will show up after clicking View -->
+    <iframe id="subjectIframe" src="{{ url_for('admin.view_sub') }}"></iframe>
+</div>
+</div>
+<script>
+    // Get the iframe and view button
+    var iframe = document.getElementById('subjectIframe');
+    var viewButton = document.getElementById('viewButton');
+
+    // Show the iframe when the "View" button is clicked
+    viewButton.onclick = function() {
+        iframe.style.display = 'block';  // Show the iframe
+    };
+
+    // Hide the iframe if the user clicks anywhere outside the iframe
+    window.onclick = function(event) {
+        // If the click is not on the iframe or the view button, hide the iframe
+        if (event.target !== iframe && event.target !== viewButton) {
+            iframe.style.display = 'none';  // Hide the iframe
+        }
+    };
+</script>
+{% endblock %}

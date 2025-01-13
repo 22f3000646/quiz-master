@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="../../static/stylesheet.css">
+    <style>
+        .container{
+            background-color: rgb(40 40 40);
+            padding: 80px;
+            margin:400px;
+            align-items: center;
+            margin-top:20px;
+            margin-bottom: 20px;
+        }
+
+        .form .form-title{
+            margin: 16px;
+            padding:10px;
+            font-size: 20px;
+        }
+        .container1{
+            margin-left:400px;
+            font-size: 40px;
+        }
+        #qualification{
+            padding: 6px;
+            margin-left:4px;
+            margin-right: 4px;
+            padding-left:30px;
+            padding-right: 30px;
+            border-radius: 4px;
+            border-color: black;
+
+        }
+        #qualification option{
+            font-size: 20px;
+        }
+        .container a{
+            font-size: 20px;
+            display:flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            margin:0px;
+            color: var(--clr-primary);
+            text-decoration: none;
+            
+        }
+        .container a:hover{
+            font-size: 20px;
+            color: var(--clr-primary-hover);
+            text-decoration: underline;
+            
+        }
+    .alert-danger{
+        padding: 10px; 
+        margin-bottom: 15px; 
+        border-radius: 5px; 
+        font-size: 14px; 
+        color: white;
+        background-color:red;
+        border: 1px solid darkred;
+    }
+    </style>
+</head>
+<body>
+    {% if form.email.errors %}
+    <span style="color: red;">{{ form.email.errors[0] }}</span>
+{% endif %}
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'unsuccess' else 'success' }}" >
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<form class="container" method="POST" action="{{ url_for('registration') }}" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <h1 style="margin-top:0px; text-align:center;">Registration Form</h1>
+    <div class="form">
+        <div class="form-title">
+            {{ form.image.label(class="label") }}
+            {{ form.image(class="form-control") }}
+        </div>
+        <div class="form-title">
+            {{ form.first_name.label(class="label") }}
+            {{ form.first_name(class="form-control") }}
+        </div>
+        <div class="form-title">
+            {{ form.phone.label(class="label") }}
+            {{ form.phone(class="form-control") }}
+        </div>
+        <div class="form-title">
+            {{ form.email.label(class="label") }}
+            {{ form.email(class="form-control") }}
+        </div>
+        <div class="form-title">
+            {{ form.password.label(class="label") }}
+            {{ form.password(class="form-control") }}
+        </div>
+        <div class="form-title">
+            {{ form.dob.label(class="label") }}
+            {{ form.dob(class="form-control") }}
+        </div>
+        <div class="form-title">
+            {{ form.qualification.label(class="label") }}
+            {{ form.qualification(class="form-control") }}
+        </div>
+        <div class="form-title">
+            {{ form.submit(class="primary-btn") }}
+        </div>
+        <div style="margin-top: 15px; color: var(--clr-primary); text-decoration: none; font-size: 14px;">
+            <a href="{{ url_for('login') }}">Already a user?</a>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>

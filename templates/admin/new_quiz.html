@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new_quiz</title>
+    <link rel="stylesheet" href="../../static/stylesheet.css">
+    <style>
+        select{
+            padding:12px;
+            border:1px solid white;
+            border-radius: 4px;
+            padding-left:30px;
+            padding-right:30px;
+            background-color: rgb(40,40,40);
+            color:white;
+            font-size: 14px;
+        }
+        .container{
+            width:50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form>
+            <h1 style="text-align:center;" >Add new Quiz</h1>
+                <select id="subjectFilter">
+                    <option value="">select a Subject</option>
+                    <option value="math">Math</option>
+                    <option value="science">Science</option>
+                    <option value="history">History</option>
+                    <!-- Add more subjects here -->
+                </select>
+                <select id="chapterFilter">
+                    <option value="">select a Chapter</option>
+                    <option value="chapter1">Chapter 1</option>
+                    <option value="chapter2">Chapter 2</option>
+                    <!-- Add more chapters here -->
+                </select>
+                <br>
+                <label>Date</label>
+                <input type="date" name="date" >
+                <labeL>Duration(in minutes)</labeL>
+                <input type="text" name="duration">
+                <labeL>Total Marks</labeL>
+                <input type="number" name="marks">
+                <labeL>No of Questions</labeL>
+                <input type="number" name="questions">
+                <labeL>Remarks</labeL>
+                <input type="text" name="remarks">
+        </form>
+    </div>
+</body>
+</html>

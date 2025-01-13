@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Masters</title>
+    <style>
+        .navbar{
+            position: absolute;
+            margin-top: 400px;
+            padding: 20px;
+            text-align: center;
+            margin-left: 600px;
+        }
+        .navbar h1{
+            font-size: 44px;
+            color: var(--clr-primary);
+            text-align: center;
+        }
+        
+        .navbar ul {
+            list-style-type: none;
+            margin-top: 10px;
+        }
+        
+        .navbar ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        
+        .navbar ul li a {
+            color: var(--clr-primary);
+            text-decoration: none;
+            font-size: 18px;
+            
+        }
+        
+        .navbar ul li a:hover {
+            color: var(--clr-primary-hover);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+           
+            text-align: center;
+            padding :100px 20px;
+            background-color: #1f2428;
+        }
+        
+        .hero-section h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color:var(--clr-primary)
+        }
+        
+        .hero-section p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color:var(--clr-primary)
+        }
+        .wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            overflow: hidden;
+            position: fixed;
+            bottom: 0;
+            padding: 30px 0;
+        }
+        
+        .wrapper img {
+            margin-left: 20px;
+            width: 200px;
+            height: 50px;
+            
+        }
+        
+        /* Animation to scroll items horizontally */
+        @keyframes scrollItems {
+            0% {
+                transform: translateX(500%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        
+        .wrapper .item {
+            animation: scrollItems 5s linear infinite;
+        } 
+    </style>
+    <link rel="stylesheet" href="../static/stylesheet.css">
+</head>
+<body>
+    <div class="navbar">
+        <h1 >Quiz Masters </h1>
+        <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </div>
+    <header class="hero-section">
+        <h2>Your trusted Quiz platform</h2>
+        <p>We provide a wide range of Quizes for different subjects</p>
+        <a href="/login" class="primary-btn">Start Now</a>
+    </header>
+    <section class="wrapper">
+        <img src="../static/CAT.png" class="item">
+        <img src="../static/gate.png" class="item">
+        <img src="../static/iitmbs.svg" class="item"> 
+        <img src="../static/jee.png" class="item"> 
+        <img src="../static/jeead.png" class="item"> 
+        </section>
+    </body>
+    </html>

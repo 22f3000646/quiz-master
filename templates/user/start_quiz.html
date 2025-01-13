@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>start_quiz</title>
+    <link rel="stylesheet" href="../../static/stylesheet.css">
+    <style>
+        .warning{
+            margin-left:200px;
+            margin-right:200px;
+            margin-top:15px;
+            border: solid black 2px;
+            font-size: 30px;
+            color: rgb(99, 1, 1);
+            background-color:white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="warning">
+        <h1>Instructions to candidate</h1>
+        <div style="text-align:left;margin-left:20px;">
+        <p>1.Sit on a quite place before starting exam with pen and paper.</p>
+        <p>2.Exam link is activated from {{mock.start_time}} to {{mock.end_time}} after that it will be auto submitted if not attempted.</p>
+        <p>3.Exam is of {{mock.total}} marks.</p>
+        <p>4.There is negative marking of {{mock.negative}} times of marks of each question.</p>
+        <p>5.Duration of examination is {{mock.time}} minutes.</p>
+    </div>
+        <p style="margin-left:10px;">Are you sure to continue the examination ?</p>
+        <button class="primary-btn"style="display:inline-block; width:300px; font-size:25px;margin-bottom:15px;margin-left:10px;background-color:green;">GO back</button>
+        <button class="primary-btn"style="background-color:red; display:inline-block; width:300px;font-size:25px; margin-bottom:15px;">start</button>
+    </div>
+</body>
+</html>

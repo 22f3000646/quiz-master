@@ -1,0 +1,146 @@
+{% extends 'user/dashboard.html' %}
+{% block title %}Results{% endblock %}
+{% block content %}
+<style>
+    .quiz{
+        display:grid;
+        grid-template-columns: auto auto auto auto auto;
+    }
+    .quiz-card{
+        margin:10px;
+        margin-left:0px;
+    }
+</style>
+<!-- <div class="quiz-container">
+    {% for service in services %}
+    <div class="quiz-card">
+        <h3>Quiz ID: {{ service.request.req_id }}</h3>
+        <p><strong>Number of Questions:</strong> {{ service.name }}</p>
+        <p><strong>Date:</strong> {{ service.professsional.first_name }}</p>
+        <p><strong>Duration:</strong> {{ service.professsional.phone_number }} mins</p>
+        <p><strong>Marks Obtained:</strong> {{ service.marks_obtained }}</p>
+        <p><strong>Total Marks:</strong> {{ service.total_marks }}</p>
+        <p><strong>AIR:</strong>{{services.rank}}/p>
+        <div class="quiz-action">
+            {% if service.request.status == "accepted" %}
+            <a href="#" class="action-btn close-btn">Close it?</a>
+            {% else %}
+            <span class="status">{{ service.request.status }}</span>
+            {% endif %}
+        </div> -->
+        <!-- {% endfor %} -->
+         <h1 style="text-align:center;">Your quiz Results</h1>
+        <div class="quiz">
+        <div class="quiz-card">
+            <h3>Quiz ID: 101</h3>
+            <p><strong>Number of Questions:</strong> 30</p>
+            <p><strong>Date:</strong> 01/01/2025</p>
+            <p><strong>Duration:</strong> 30 mins</p>
+            <p><strong>Marks Obtained:</strong> 40</p>
+            <p><strong>Total Marks:</strong> 50</p>
+            <p><strong>Rank:</strong>50</p>
+            <p><strong>Total Participants:</strong>100</p>
+            <button class="btn"style= "background-color:green;">see answers</button>
+        </div>
+        <div class="quiz-card">
+            <h3>Quiz ID: 101</h3>
+            <p><strong>Number of Questions:</strong> 30</p>
+            <p><strong>Date:</strong> 01/01/2025</p>
+            <p><strong>Duration:</strong> 30 mins</p>
+            <p><strong>Marks Obtained:</strong> 40</p>
+            <p><strong>Total Marks:</strong> 50</p>
+            <p><strong>Rank:</strong>50</p>
+            <p><strong>Total Participants:</strong>100</p>
+            <button class="btn"style= "background-color:green;">see answers</button>
+        </div>
+        <div class="quiz-card">
+            <h3>Quiz ID: 101</h3>
+            <p><strong>Number of Questions:</strong> 30</p>
+            <p><strong>Date:</strong> 01/01/2025</p>
+            <p><strong>Duration:</strong> 30 mins</p>
+            <p><strong>Marks Obtained:</strong> 40</p>
+            <p><strong>Total Marks:</strong> 50</p>
+            <p><strong>Rank:</strong>50</p>
+            <p><strong>Total Participants:</strong>100</p>
+            <button class="btn"style= "background-color:green;">see answers</button>
+        </div>
+        <div class="quiz-card">
+            <h3>Quiz ID: 101</h3>
+            <p><strong>Number of Questions:</strong> 30</p>
+            <p><strong>Date:</strong> 01/01/2025</p>
+            <p><strong>Duration:</strong> 30 mins</p>
+            <p><strong>Marks Obtained:</strong> 40</p>
+            <p><strong>Total Marks:</strong> 50</p>
+            <p><strong>Rank:</strong>50</p>
+            <p><strong>Total Participants:</strong>100</p>
+            <button class="btn"style= "background-color:green;">see answers</button>
+        </div>
+        <div class="quiz-card">
+            <h3>Quiz ID: 101</h3>
+            <p><strong>Number of Questions:</strong> 30</p>
+            <p><strong>Date:</strong> 01/01/2025</p>
+            <p><strong>Duration:</strong> 30 mins</p>
+            <p><strong>Marks Obtained:</strong> 40</p>
+            <p><strong>Total Marks:</strong> 50</p>
+            <p><strong>Rank:</strong>50</p>
+            <p><strong>Total Participants:</strong>100</p>
+            <button class="btn"style= "background-color:green;">see answers</button>
+        </div>
+        <div class="quiz-card">
+            <h3>Quiz ID: 101</h3>
+            <p><strong>Number of Questions:</strong> 30</p>
+            <p><strong>Date:</strong> 01/01/2025</p>
+            <p><strong>Duration:</strong> 30 mins</p>
+            <p><strong>Marks Obtained:</strong> 40</p>
+            <p><strong>Total Marks:</strong> 50</p>
+            <p><strong>Rank:</strong>50</p>
+            <p><strong>Total Participants:</strong>100</p>
+            <button class="btn"style= "background-color:green;">see answers</button>
+        </div>
+        <div class="quiz-card">
+            <h3>Quiz ID: 101</h3>
+            <p><strong>Number of Questions:</strong> 30</p>
+            <p><strong>Date:</strong> 01/01/2025</p>
+            <p><strong>Duration:</strong> 30 mins</p>
+            <p><strong>Marks Obtained:</strong> 40</p>
+            <p><strong>Total Marks:</strong> 50</p>
+            <p><strong>Rank:</strong>50</p>
+            <p><strong>Total Participants:</strong>100</p>
+            <button class="btn"style= "background-color:green;">see answers</button>
+        </div>
+        <div class="quiz-card">
+            <h3>Quiz ID: 101</h3>
+            <p><strong>Number of Questions:</strong> 30</p>
+            <p><strong>Date:</strong> 01/01/2025</p>
+            <p><strong>Duration:</strong> 30 mins</p>
+            <p><strong>Marks Obtained:</strong> 40</p>
+            <p><strong>Total Marks:</strong> 50</p>
+            <p><strong>Rank:</strong>50</p>
+            <p><strong>Total Participants:</strong>100</p>
+            <button class="btn"style= "background-color:green;">see answers</button>
+        </div>
+        <div class="quiz-card">
+            <h3>Quiz ID: 101</h3>
+            <p><strong>Number of Questions:</strong> 30</p>
+            <p><strong>Date:</strong> 01/01/2025</p>
+            <p><strong>Duration:</strong> 30 mins</p>
+            <p><strong>Marks Obtained:</strong> 40</p>
+            <p><strong>Total Marks:</strong> 50</p>
+            <p><strong>Rank:</strong>50</p>
+            <p><strong>Total Participants:</strong>100</p>
+            <button class="btn"style= "background-color:green;">see answers</button>
+        </div>
+        <div class="quiz-card">
+            <h3>Quiz ID: 101</h3>
+            <p><strong>Number of Questions:</strong> 30</p>
+            <p><strong>Date:</strong> 01/01/2025</p>
+            <p><strong>Duration:</strong> 30 mins</p>
+            <p><strong>Marks Obtained:</strong> 40</p>
+            <p><strong>Total Marks:</strong> 50</p>
+            <p><strong>Rank:</strong>50</p>
+            <p><strong>Total Participants:</strong>100</p>
+            <button class="btn"style= "background-color:green;">see answers</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

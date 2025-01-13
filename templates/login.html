@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="../static/stylesheet.css">
+    <style>
+        .container {
+            background-color: rgb(40 40 40);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px; 
+            margin-top:100px;
+            margin-bottom:100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left:400px;
+        }
+        .container .link1 {
+            align-self: flex-end;
+            margin-bottom: 20px;
+            
+        }
+        .container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--clr-text);
+        }
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        a{
+            color:var(--clr-primary);
+            text-decoration:none;
+        }
+        .container .link1 a:hover,
+        a:hover {
+            text-decoration: underline;
+            color:var(--clr-primary-hover);
+        }
+    .alert-danger{
+            padding: 10px; 
+            margin-bottom: 15px; 
+            border-radius: 5px; 
+            font-size: 14px; 
+            color: white;
+            background-color:red;
+            border: 1px solid darkred;
+        }
+    .alert-success{
+        padding: 10px; 
+            margin-bottom: 15px; 
+            border-radius: 5px; 
+            font-size: 14px; 
+            color: white;
+            background-color:green;
+            border: 1px solid darkgreen;
+    }
+    </style>
+</head>
+<body>
+    {% if form.email.errors %}
+    <span style="color: red;">{{ form.email.errors[0] }}</span>
+{% endif %}
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'unsuccess' else 'success' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <h1>Login</h1>
+        <form class="form" action="{{ url_for('login') }}" method="POST">
+            {{ form.csrf_token }}
+            <div style="margin-bottom: 20px;">
+                {{ form.email.label }}
+                {{ form.email(class="form-control", id="username", placeholder="Email or Username") }}
+            </div>
+            <div style="margin-bottom: 20px;">
+                {{ form.password.label }}
+                {{ form.password(class="form-control", id="password", placeholder="Password") }}
+            </div>
+            <div style="margin-top: 10px;">
+                {{ form.submit(class="primary-btn") }}
+            </div>
+            <div style="margin-top: 10px;">
+                New to Quiz Masters: 
+                <a href="{{ url_for('registration') }}">Sign-up</a>
+            </div>
+            <div style="margin-top: 15px; color: var(--clr-primary); text-decoration: none; font-size: 14px;">
+                <a href="#">Forgot password?</a>
+            </div>
+        </form>
+        
+    </div>
+</body>
+</html>
