@@ -7,7 +7,7 @@ The Quiz Masters App is a web application designed to facilitate creating and ma
 
 ## Features
 
-- **Quiz Creation**: Easily create quizzes with customizable questions and answers.
+- **Quiz Creation**: Easily create quizzes with customizable questions and answers. 
 - **User Management**: Register users and manage their access to quizzes.
 - **Quiz Taking**: Participants can take quizzes online with personalized summary.
 - **Scoring**: Automatic scoring and results generation.
