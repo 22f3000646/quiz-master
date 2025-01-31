@@ -24,7 +24,7 @@ The Quiz Masters App is a web application designed to facilitate creating and ma
 1. Clone the repository:
    ```
    git clone https://github.com/22f3000646/quiz-masters.git
-   cd quiz-masters
+   cd quiz-master
    ```
 
 2. Install dependencies:
@@ -37,14 +37,12 @@ The Quiz Masters App is a web application designed to facilitate creating and ma
 
 4. Initialize the database:
    ```
-   flask db init
-   flask db migrate
-   flask db upgrade
+   database will be created on running the application with default admin 
    ```
 
 5. Run the application:
    ```
-   flask run
+   python app.py
    ```
 
 The app should now be running on `http://localhost:5000`.
