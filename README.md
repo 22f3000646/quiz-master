@@ -24,7 +24,6 @@ The Quiz Masters App is a web application designed to facilitate creating and ma
 1. Clone the repository:
    ```
    git clone https://github.com/22f3000646/quiz-masters.git
-   cd quiz-master
    ```
 
 2. Install dependencies:
