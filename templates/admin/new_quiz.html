@@ -23,33 +23,49 @@
 </head>
 <body>
     <div class="container">
-        <form>
-            <h1 style="text-align:center;" >Add new Quiz</h1>
-                <select id="subjectFilter">
-                    <option value="">select a Subject</option>
-                    <option value="math">Math</option>
-                    <option value="science">Science</option>
-                    <option value="history">History</option>
-                    <!-- Add more subjects here -->
-                </select>
-                <select id="chapterFilter">
-                    <option value="">select a Chapter</option>
-                    <option value="chapter1">Chapter 1</option>
-                    <option value="chapter2">Chapter 2</option>
-                    <!-- Add more chapters here -->
-                </select>
-                <br>
-                <label>Date</label>
-                <input type="date" name="date" >
-                <labeL>Duration(in minutes)</labeL>
-                <input type="text" name="duration">
-                <labeL>Total Marks</labeL>
-                <input type="number" name="marks">
-                <labeL>No of Questions</labeL>
-                <input type="number" name="questions">
-                <labeL>Remarks</labeL>
-                <input type="text" name="remarks">
+        <form method="POST">
+            <label>Select a Subject</label>
+            <select name="subject">
+                <option value="">Select a Subject</option>
+                {% for sub in subjects %}
+                    <option value="{{ sub.name }}" {% if sub.name == selected_subject %}selected{% endif %}>
+                        {{ sub.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="primary-btn"style="max-width:218px;max-height:64px;">Load Chapters</button>
         </form>
+                {% if selected_subject %}
+    <form method="POST" action="{url_for('admin.add_quiz')}">
+        <label>Select a Chapter</label>
+        <select name="chapter">
+            <option value="">Select a Chapter</option>
+            {% for chap in chapters %}
+                <option value="{{ chap.c_id }}">{{ chap.name }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label>Date</label>
+        <input type="date" name="date" required>
+
+        <label>Duration (in minutes)</label>
+        <input type="text" name="duration" required>
+
+        <label>Total Marks</label>
+        <input type="number" name="marks" required>
+
+        <label>Number of Questions</label>
+        <input type="number" name="questions" required>
+
+        <label>Remarks</label>
+        <input type="text" name="remarks">
+
+        <br><br>
+        <button type="submit" class="primary-btn">Submit</button>
+    </form>
+    {% endif %}
     </div>
 </body>
 </html>

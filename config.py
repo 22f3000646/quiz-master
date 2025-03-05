@@ -1,0 +1,1 @@
+SECRET_KEY = 'ASDmnb@1230#12'

@@ -26,13 +26,19 @@ The Quiz Masters App is a web application designed to facilitate creating and ma
    git clone https://github.com/22f3000646/quiz-masters.git
    ```
 
+
+2. Create virtual environment :
+  ```
+  python -m venv env
+  ```
+
 2. Install dependencies:
    ```
    pip install -r requirements.txt
    ```
 
-3. Set up environment variables:
-   - Create a `.env` file based on `.env.example` and configure necessary variables.
+3. Set up secret key in config.py:
+   - SECRET_KEY = '***********'
 
 4. Initialize the database:
    ```
@@ -49,7 +55,7 @@ The app should now be running on `http://localhost:5000`.
 ## Usage
 
 - Navigate to `http://localhost:5000` in your web browser.
-- Register as a user or log in if you already have an account.
+- Register as a user or log in as an admin.
 - Create quizzes, manage participants, and view quiz results from the dashboard.
 - Participants can take quizzes by accessing the provided quiz links.
 
@@ -61,7 +67,6 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 ## Acknowledgments
 
 - [Flask Documentation](https://flask.palletsprojects.com/)
-- [Bootstrap Documentation](https://getbootstrap.com/docs/)
 - [SQLite Documentation](https://www.sqlite.org/docs.html)
 
 ---

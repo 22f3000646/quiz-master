@@ -1,19 +1,30 @@
-<!DOCTYPE html>
+=<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>new_sub</title>
+    <title>new_chapter</title>
     <link rel="stylesheet" href="../../static/stylesheet.css">
 </head>
 <body>
     <div class="container">
-        <form>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'unsuccess' else 'success' }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <form action="{{url_for('admin.create_chapter',s_id = id)}}" method='POST'>
             <h1 style="text-align:center;">Add new chapter</h1>
             <label>Name</label>
             <input name="name" type="text">
             <label>Desc</label>
             <input name="desc" type="text" style="padding:30px;">
+
+            <input type="submit" style="background-color:green;margin-top:15px;">
         </form>
     </div>
 </body>

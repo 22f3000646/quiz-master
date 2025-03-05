@@ -1,0 +1,67 @@
+:root {
+    --clr-back:rgba(26, 26, 26, 0.891);
+    --clr-text:white;
+    --clr-primary: #10a33c; /* Primary button color */
+    --clr-primary-hover: #459381; /* Primary hover color */
+    --clr-border: #e0e0e0; /* Border color for inputs */
+    --clr-placeholder: #b0b3b8; /* Placeholder text color */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--clr-back);
+    color: var(--clr-text);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    justify-content: center;
+}
+input{
+    width:100%;
+    padding:10px;
+    border-radius: 5%;
+    font-size: 18px;
+    color: var(--clr-text);
+    background-color: var(--clr-back);
+    border: 1px solid white;
+}
+.primary-btn:hover {
+    background-color: var(--clr-primary-hover);
+}
+
+.primary-btn {
+    background-color: var(--clr-primary);
+    color: var(--clr-text);
+    padding: 15px 40px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    text-decoration: none;
+    width:100%;
+    transition: background-color 0.3s ease;
+}
+.container{
+    background-color: rgb(40 40 40);
+    font-family: cursive;
+    padding:20px;
+    margin:20px;
+    border:1px solid white;
+    border-radius: 5px;
+    display: inline-block;
+}
+.btn {
+    margin-bottom: 20px;
+    display: block;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.btn:hover {
+    background-color: #45a049;
+}
