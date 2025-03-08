@@ -40,11 +40,11 @@
     <p>No of quizzes :30</p>
     
     <button class="btn view-btn" style="display:inline-block;margin:15px;" id="viewButton" class="btn view-btn" data-sub-id="{{ sub.s_id }}" >View</button>
-    <button class="btn" style="display:inline-block;margin:15px;"><a href="{{url_for('admin.create_chapter',s_id = sub.s_id)}}"> Add chapter</a></button>
-    <form action="{{ url_for('admin.delete_sub', id=sub.s_id) }}" method="POST" style="display:inline-block;">
+    <button class="btn" style="display:inline-block;margin:15px;"><a href="{{url_for('admin.create_chapter',s_id=sub.s_id)}}"> Add chapter</a></button>
+    <form action="{{ url_for('admin.delete_sub',id=sub.s_id) }}" method="POST" style="display:inline-block;">
         <button class="btn" style="margin:15px; background-color:red; color:white; border:none;">Delete</button>
     </form>
-    <button class="btn" style="display:inline-block;margin:15px;"><a href="{{ url_for('admin.edit_sub', s_id=sub.s_id) }}"> Edit Subject </a></button>
+    <button class="btn" style="display:inline-block;margin:15px;"><a href="{{ url_for('admin.edit_sub',id=sub.s_id) }}"> Edit Subject </a></button>
     
     
     <!-- Iframe that will show up after clicking View -->

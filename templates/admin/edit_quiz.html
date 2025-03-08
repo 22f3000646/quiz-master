@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Quiz</title>
+    <link rel="stylesheet" href="../../static/stylesheet.css">
+    <style>
+        select, input {
+            padding: 12px;
+            border: 1px solid white;
+            border-radius: 4px;
+            background-color: rgb(40,40,40);
+            color: white;
+            font-size: 14px;
+        }
+        .container {
+            width: 70%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .column {
+            width: 45%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="column">
+            <h2>Current Values</h2>
+            <p><strong>Subject:</strong> {{ mock.chapters.subjects.name if mock.chapters and mock.chapters.subjects else 'N/A' }}</p>
+            <p><strong>Chapter:</strong> {{ mock.chapters.name if mock.chapters else 'N/A' }}</p>
+            <p><strong>Date:</strong> {{ mock.date.strftime('%Y-%m-%d') if mock.date else 'N/A' }}</p>
+            <p><strong>Duration:</strong> {{ mock.duration }}</p>
+            <p><strong>Total Marks:</strong> {{ mock.total_marks }}</p>
+            <p><strong>Number of Questions:</strong> {{ mock.no_of_ques }}</p>
+            <p><strong>Remarks:</strong> {{ mock.remarks }}</p>
+        </div>
+        
+        <div class="column">
+            <h2>Edit Quiz</h2>
+            <form method="POST" action="{{ url_for('admin.edit_quiz', m_id=m_id) }}">
+                <label>Select a Subject</label>
+                <select name="subject" required>
+                    {% for sub in subjects %}
+                        <option value="{{ sub.s_id }}" {% if subject and sub.s_id == subject.s_id %}selected{% endif %}>
+                            {{ sub.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label>Select a Chapter</label>
+                <select name="chapter" required>
+                    {% for chap in chapters %}
+                        <option value="{{ chap.c_id }}" {% if chap.c_id == chapter.c_id %}selected{% endif %}>
+                            {{ chap.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label>Date</label>
+                <input type="date" name="date" value="{{ mock.date.strftime('%Y-%m-%d') if mock.date else '' }}" required>
+
+                <label>Duration (in minutes)</label>
+                <input type="text" name="duration" value="{{ mock.duration }}" required>
+
+                <label>Total Marks</label>
+                <input type="number" name="marks" value="{{ mock.total_marks }}" required>
+
+                <label>Number of Questions</label>
+                <input type="number" name="questions" value="{{ mock.no_of_ques }}" required>
+
+                <label>Remarks</label>
+                <input type="text" name="remarks" value="{{ mock.remarks }}">
+
+                <br><br>
+                <button type="submit" class="primary-btn">Update Quiz</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

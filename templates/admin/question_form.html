@@ -1,0 +1,61 @@
+{% extends "admin/dashboard.html" %}
+{% block content %}
+
+<h2>Manage Questions for "{{ quiz.chapters.name }}"</h2>
+<p>Total Questions Allowed: {{ quiz.total_questions }}</p>
+<p>Total Marks Allowed: {{ quiz.total_marks }}</p>
+<p>Questions Added: {{ questions|length }}</p>
+<p>Marks Used: {{ questions | sum(attribute='marks') }}</p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<form method="POST">
+    <fieldset>
+        <legend>Add New Question</legend>
+        <label for="statement">Statement:</label>
+        <textarea name="statement" required></textarea>
+
+        <label for="negative_marking">Negative Marking:</label>
+        <input type="number" name="negative_marking" step="0.1" value="0">
+
+        <label for="marks">Marks:</label>
+        <input type="number" name="marks" step="0.1" required>
+
+        <button type="submit">Add Question</button>
+    </fieldset>
+</form>
+
+<h3>Added Questions</h3>
+{% for question in questions %}
+    <div class="question-box">
+        <form action="{{ url_for('admin.edit_question', que_id=question.q_id) }}" method="POST">
+            <label for="statement_{{ question.q_id }}"><strong>Q{{ loop.index }}:</strong></label>
+            <textarea name="statement" required>{{ question.statement }}</textarea>
+
+            <label for="negative_marking_{{ question.q_id }}">Negative Marking:</label>
+            <input type="number" name="negative_marking" step="0.1" value="{{ question.negative_marking }}" required>
+
+            <label for="marks_{{ question.q_id }}">Marks:</label>
+            <input type="number" name="marks" step="0.1" value="{{ question.marks }}" required>
+
+            <button type="submit">Update Question</button>
+        </form>
+
+        <!-- Delete Question -->
+        <form action="{{ url_for('admin.delete_question', que_id=question.q_id) }}" method="POST" style="display:inline;">
+            <button type="submit">Delete</button>
+        </form>
+
+        <!-- Manage Options -->
+        <a href="{{ url_for('admin.manage_options', que_id=question.q_id) }}">Manage Options</a>
+    </div>
+{% endfor %}
+
+
+{% endblock %}

@@ -1,7 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
-db = SQLAlchemy()
-from app import db
+from extension import db
+
 
 class User(db.Model):
     __tablename__ ="user"
@@ -30,6 +29,8 @@ class Subjects(db.Model):
     s_id = db.Column(db.Integer,primary_key=True,autoincrement =True)
     name = db.Column(db.String(20),nullable = False , unique = True)
     desc = db.Column(db.String(50))
+    
+    chapters = db.relationship('Chapters',backref="subjects",lazy=True)
 
 class Chapters(db.Model):
     __tablename__="chapters"
@@ -38,19 +39,22 @@ class Chapters(db.Model):
     name = db.Column(db.String(20),nullable = False , unique = True)
     desc = db.Column(db.String(50))
     
+    Mock = db.relationship('Mock',backref='chapters', lazy=True)
+
+    
 class Mock(db.Model):
     __tablename__="mock"
     m_id = db.Column(db.Integer,primary_key=True,autoincrement =True)
     c_id = db.Column(db.Integer,db.ForeignKey('chapters.c_id'))
     date = db.Column(db.DateTime)
     duration = db.Column(db.Integer)
-    total_marks = db.Column(db.Integer)
+    total_marks = db.Column(db.Float)
     no_of_ques = db.Column(db.Integer)
     remarks = db.Column(db.String(100))
     
-    questions = db.relationship('question', backref='mock', lazy=True)
+    questions = db.relationship('Question',backref='mock', lazy=True)
     
-class question(db.Model):
+class Question(db.Model):
     __tablename__="question"
     q_id = db.Column(db.Integer,primary_key=True,autoincrement =True)
     m_id = db.Column(db.Integer,db.ForeignKey('mock.m_id'))
@@ -59,17 +63,18 @@ class question(db.Model):
     statement_pic = db.Column(db.LargeBinary)
     statement_type = db.Column(db.String(10))
     o_id = db.Column(db.Integer)
-    marks = db.Column(db.Integer)
-    neg_marking = db.Column(db.Integer)
+    marks = db.Column(db.Float)
+    neg_marking = db.Column(db.Float)
     
 class Options(db.Model):
     __tablename__="options"
-    o_id = db.Column(db.Integer,db.ForeignKey('options.o_id'),primary_key=True,autoincrement =True)
+    q_id = db.Column(db.Integer,db.ForeignKey('question.q_id'))
+    o_id = db.Column(db.Integer,primary_key=True,autoincrement =True)
     statement_text = db.Column(db.String(50))
     statement_pic_name = db.Column(db.String(50))
     statement_pic = db.Column(db.LargeBinary)
     statement_type = db.Column(db.String(10))
-    correctness = db.Column(db.String(10),default = False)
+    correctness = db.Column(db.Boolean(10),default = False)
     
 class scores(db.Model):
     __tablename__="scores"

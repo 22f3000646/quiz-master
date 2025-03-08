@@ -36,7 +36,7 @@
             <button type="submit" class="primary-btn"style="max-width:218px;max-height:64px;">Load Chapters</button>
         </form>
                 {% if selected_subject %}
-    <form method="POST" action="{url_for('admin.add_quiz')}">
+    <form method="POST" action="{{url_for('admin.add_quiz')}}">
         <label>Select a Chapter</label>
         <select name="chapter">
             <option value="">Select a Chapter</option>
@@ -48,7 +48,7 @@
         <br><br>
 
         <label>Date</label>
-        <input type="date" name="date" required>
+        <input type="date" name="date" required min="{{today}}">
 
         <label>Duration (in minutes)</label>
         <input type="text" name="duration" required>

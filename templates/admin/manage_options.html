@@ -1,0 +1,28 @@
+{% extends "admin/dashboard.html" %}
+{% block content %}
+
+<h2>Manage Options for Question</h2>
+<p>{{ question.statement }}</p>
+
+<form method="POST">
+    <label for="statement">Option Statement:</label>
+    <input type="text" name="statement" required>
+
+    <label for="correct">Correct:</label>
+    <input type="checkbox" name="correct">
+
+    <button type="submit">Add Option</button>
+</form>
+
+<h3>Added Options</h3>
+{% for option in options %}
+    <div class="option-box">
+        <p>{{ option.statement_text }} {% if option.correctness %}✔{% endif %}</p>
+
+        <form action="{{ url_for('admin.delete_option',option_id=option.o_id) }}" method="POST" style="display:inline;">
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+{% endfor %}
+
+{% endblock %}

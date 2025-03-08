@@ -17,7 +17,7 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
-        <form action="{{url_for('admin.create_chapter',s_id = id)}}" method='POST'>
+        <form action="{{url_for('admin.create_chapter',s_id=s_id)}}" method='POST'>
             <h1 style="text-align:center;">Add new chapter</h1>
             <label>Name</label>
             <input name="name" type="text">

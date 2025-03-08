@@ -7,8 +7,11 @@ from routes import user_blueprint
 from admin import admin
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///quizmaster.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+from extension import db
 from models import *
 db.init_app(app)
+from flask_migrate import Migrate
+migrate = Migrate(app,db)
 app.register_blueprint(user_blueprint,url_prefix="/student")
 app.register_blueprint(admin,url_prefix="/admin")
 app.config['SECRET_KEY'] = SECRET_KEY
