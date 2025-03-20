@@ -9,12 +9,14 @@ class User(db.Model):
     password = db.Column(db.String(128),nullable=False)
     role = db.Column(db.String(20),default = "student")
     
+    Student_details = db.relationship('Student_details',backref='user',lazy=True)
+    
     def set_password(self,password):
         self.password = generate_password_hash(password)
 
 class Student_details(db.Model):
     __tablename__="student_details"
-    u_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key = True,autoincrement = True)
+    u_id = db.Column(db.Integer,db.ForeignKey('user.id'),primary_key = True)
     full_name = db.Column(db.String(50),nullable = False)
     qualification = db.Column(db.String(20),nullable = False)
     dob = db.Column(db.DateTime)
@@ -66,6 +68,8 @@ class Question(db.Model):
     marks = db.Column(db.Float)
     neg_marking = db.Column(db.Float)
     
+    option = db.relationship('Options',backref='questions')
+    
 class Options(db.Model):
     __tablename__="options"
     q_id = db.Column(db.Integer,db.ForeignKey('question.q_id'))
@@ -76,6 +80,19 @@ class Options(db.Model):
     statement_type = db.Column(db.String(10))
     correctness = db.Column(db.Boolean(10),default = False)
     
+    
+class Response(db.Model):
+    __tablename__ = "response"
+    r_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    u_id = db.Column(db.Integer, db.ForeignKey('student_details.u_id'), nullable=False)
+    q_id = db.Column(db.Integer, db.ForeignKey('question.q_id'), nullable=False)
+    selected_o_id = db.Column(db.Integer, db.ForeignKey('options.o_id'), nullable=True)
+    timestamp = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+
+    user = db.relationship('Student_details', backref='responses')
+    question = db.relationship('Question', backref='responses')
+    selected_option = db.relationship('Options', backref='responses')
+
 class scores(db.Model):
     __tablename__="scores"
     sc_id = db.Column(db.Integer,primary_key=True,autoincrement =True)

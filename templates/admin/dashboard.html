@@ -103,14 +103,13 @@
                 <input type="text" placeholder="Search for a user..." id="userSearch">
                 <button type="button" class="btn" style="margin:5px;padding:15px;">Search</button>
             </div>
-            <!-- Example User Box -->
+            {% for user in users %}
             <div class="user-box">
-                <p>User 1</p>
+                <p><a href="{{url_for('admin.user_details',id=users.id)}}"> {{ user.student_details.name }}</a></p>
             </div>
-            <div class="user-box">
-                <p>User 2</p>
-            </div>
-            <!-- Add more users here -->
+            {% endfor %}
+
+
         </div>
 
         <!-- Quiz Container -->

@@ -141,7 +141,7 @@ input{
 }
 
 
-.profile-pic {
+.profile-pic img{
     width: 100px;
     height: 100px;
     border-radius: 50%;
@@ -232,23 +232,23 @@ canvas {
     <div class="grid">
     <div class="profile">
         <div style="display:inline-block;" >
-        <div class="profile-pic"></div>
+        <div class="profile-pic"><img src="data:image/jpeg;base64,{{ image }}"></div>
         <div class="primary-btn" style="padding:10px; width:120px;" >Edit profile</div>
     </div>
         <p>
-            Name:
+            Name:{{user.full_name}}
         </p>
         <p>
-            Email:
+            Email:{{user.user.Email}}
         </p>
         <p>
-            phone:
+            phone:{{user.phone}}
         </p>
         <p>
-            Qualification:
+            Qualification:{{user.qualification}}
         </p>
         <p>
-            Dob:
+            Dob:{{user.dob.strftime('%d-%m-%Y')}}
         </p>
     </div>
     <div class="graph-section">
@@ -262,8 +262,12 @@ canvas {
     <div class="select" >
     <label for="search_option">subject:</label>
         <select name="search_option" id="search_option">
-            <option value="date" >Pdsa</option>
-            <option value="address" >Dbms</option>
+            {% for subject in subjects %}
+            <option value="{{subject.s_id}}" >{{subject.name}}</option>
+            {% endfor %}
+            {% for chapter in chapters %}
+            <option value="{{chapter.c_id}}" >{{ chapter.name }}</option>
+            {% endfor %}
         </select>
         <label for="search_option">chapter:</label>
         <select name="search_option" id="search_option">
@@ -277,75 +281,36 @@ canvas {
 </div>
 </div>
     <p style="text-align:center;font-size:30px;margin:20px;padding:20px;color:#e5e7eb;">Your upcoming quizes</p>
-    <div class="quiz-container">
-        {% for service in services %}
-        <div class="quiz-card">
-            <h3>Quiz ID: {{ service.request.req_id }}</h3>
-            <p><strong>Number of Questions:</strong> {{ service.name }}</p>
-            <p><strong>Date:</strong> {{ service.professsional.first_name }}</p>
-            <p><strong>Duration:</strong> {{ service.professsional.phone_number }} mins</p>
-            <div class="quiz-action">
-                {% if service.request.status == "accepted" %}
-                <a href="#" class="action-btn close-btn">Close it?</a>
-                {% else %}
-                <span class="status">{{ service.request.status }}</span>
-                {% endif %}
-            </div>
-        </div>
-        {% endfor %}
-    </div>
     <div class="quiz">
-        <!-- Example Quiz Box -->
+        {% for quiz in quizzes %}
         <div class="quiz-box">
-            <div><strong>Date:</strong> 01/01/2025</div>
-            <div><strong>Subject:</strong> Math</div>
-            <div><strong>Chapter:</strong> Algebra</div>
-            <div><strong>Total Marks:</strong> 50</div>
-            <div><strong>Total Questions:</strong> 20</div>
-            <div><strong>Duration:</strong> 30 mins</div>
-            <button class="btn" style="display:inline-block;margin:15px;">start Test</button>
+            <div><strong>Date:</strong>{{quiz.date.strftime('%d-%m-%Y')}} </div>
+            <div><strong>Subject:</strong>{{quiz.chapters.subjects.name}}</div>
+            <div><strong>Chapter:</strong> {{quiz.chapters.name}}</div>
+            <div><strong>Total Marks:</strong>{{quiz.total_marks}}</div>
+            <div><strong>Total Questions:</strong>{{quiz.no_of_ques}}</div>
+            <div><strong>Duration:</strong> {{quiz.duration}}</div>
+            <button class="btn" style="display:inline-block;margin:15px;"  onclick="openwarning()">start Test</button>
             </div>
+     
 
-        <div class="quiz-box">
-            <div><strong>Date:</strong> 02/01/2025</div>
-            <div><strong>Subject:</strong> Science</div>
-            <div><strong>Chapter:</strong> Chemistry</div>
-            <div><strong>Total Marks:</strong> 60</div>
-            <div><strong>Total Questions:</strong> 25</div>
-            <div><strong>Duration:</strong> 40 mins</div>
-            <button class="btn" style="display:inline-block;margin:15px;">start Test</button>
+    <div id="starttest" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
+             background:white; padding:20px; border-radius:10px; box-shadow:0px 0px 10px rgba(0,0,0,0.2);color:black;">
+             <div class="warning">
+                <h1>Instructions to candidate</h1>
+                <div style="text-align:left;margin-left:20px;">
+                <p>1.Sit on a quite place before starting exam with pen and paper.</p>
+                <p>2.Exam link is activated on <strong>{{quiz.date.strftime('%d-%m-%Y')}}</strong>after that you will not be able to attempt it.</p>
+                <p>3.Exam is of <strong>{{quiz.total_marks}}</strong> marks.</p>
+                <p>5.Duration of examination is <strong>{{quiz.duration}}</strong> minutes.</p>
             </div>
-        <div class="quiz-box">
-            <div><strong>Date:</strong> 02/01/2025</div>
-            <div><strong>Subject:</strong> Science</div>
-            <div><strong>Chapter:</strong> Chemistry</div>
-            <div><strong>Total Marks:</strong> 60</div>
-            <div><strong>Total Questions:</strong> 25</div>
-            <div><strong>Duration:</strong> 40 mins</div>
-            <button class="btn" style="display:inline-block;margin:15px;">start Test</button>
+                <p style="margin-left:10px;">Are you sure to continue the examination ?</p>
+                <button class="primary-btn"style='display:inline-block; width:300px; font-size:25px;margin-bottom:15px;margin-left:10px;background-color:green;'onclick="closewarning()">GO back</button>
+                <a href="{{url_for('user_blueprint.start_test',qid=quiz.m_id,sid=user.u_id)}}"> <button class="primary-btn"style="background-color:red; display:inline-block; width:300px;font-size:25px; margin-bottom:15px;">start</button></a>
             </div>
-        <div class="quiz-box">
-            <div><strong>Date:</strong> 02/01/2025</div>
-            <div><strong>Subject:</strong> Science</div>
-            <div><strong>Chapter:</strong> Chemistry</div>
-            <div><strong>Total Marks:</strong> 60</div>
-            <div><strong>Total Questions:</strong> 25</div>
-            <div><strong>Duration:</strong> 40 mins</div>
-            <button class="btn" style="display:inline-block;margin:15px;">start Test</button>
-            </div>
-        <div class="quiz-box">
-            <div><strong>Date:</strong> 02/01/2025</div>
-            <div><strong>Subject:</strong> Science</div>
-            <div><strong>Chapter:</strong> Chemistry</div>
-            <div><strong>Total Marks:</strong> 60</div>
-            <div><strong>Total Questions:</strong> 25</div>
-            <div><strong>Duration:</strong> 40 mins</div>
-            <button class="btn" style="display:inline-block;margin:15px;">start Test</button>
-            </div>
-        <!-- Add more quizzes here -->
-    </div>
-    </div>
-    {% endblock %}
+</div>
+{% endfor %}
+{% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const ctx = document.getElementById('quizChart').getContext('2d');
@@ -371,6 +336,15 @@ canvas {
             }
         });
     </script>
+    <script>
+        function openwarning(){
+            document.getElementById("starttest").style.display = "block";
+        }
+        function closewarning(){
+            document.getElementById("starttest").style.display = "none";
+        }
+    </script>
+    
     
 </body>
 </html>

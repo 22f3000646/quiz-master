@@ -8,7 +8,7 @@ from admin import admin
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///quizmaster.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 from extension import db
-from models import *
+from models import User,Student_details,create_database
 db.init_app(app)
 from flask_migrate import Migrate
 migrate = Migrate(app,db)
@@ -42,7 +42,7 @@ def registration():
         existing_username = User.query.filter_by(Email = form.email.data).first()
         if existing_username:
             flash('Email already exists','error')
-            return render_template('cust/customer_registration.html')
+            return redirect(url_for('registration'))
         image = form.image.data
         name = form.first_name.data
         email = form.email.data
@@ -53,12 +53,12 @@ def registration():
         new_user = User(Email = email,password = password , role ="student")
         db.session.add(new_user)
         db.session.flush()
-        new_details = Student_details(full_name = name ,qualification = qualification , dob = dob , phone = phone,profile_picture_name = image.filename,profile_picture = image.read())
+        new_details = Student_details(u_id = new_user.id,full_name = name ,qualification = qualification , dob = dob , phone = phone,profile_picture_name = image.filename,profile_picture = image.read())
         db.session.add(new_details)
         db.session.commit()
         flash('Registration successful!', 'success')
         return redirect(url_for('login'))
-    return render_template('/registration.html',form = form)
+    return render_template('registration.html',form = form)
 
 @app.route('/logout')
 def logout():

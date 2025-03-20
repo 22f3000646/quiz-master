@@ -14,7 +14,7 @@
     <button type="submit">Add Option</button>
 </form>
 
-<h3>Added Options</h3>
+<!-- <h3>Added Options</h3>
 {% for option in options %}
     <div class="option-box">
         <p>{{ option.statement_text }} {% if option.correctness %}✔{% endif %}</p>
@@ -23,6 +23,27 @@
             <button type="submit">Delete</button>
         </form>
     </div>
+{% endfor %} -->
+<h3>Added Options</h3>
+{% for option in options %}
+    <div class="option-box">
+        <p>{{ option.statement_text }} {% if option.correctness %}✔{% endif %}</p>
+
+        <!-- Delete Option Form -->
+        <form action="{{ url_for('admin.delete_option', option_id=option.o_id) }}" method="POST" style="display:inline;">
+            <button type="submit">Delete</button>
+        </form>
+
+        <!-- Edit Option Form (Always Visible) -->
+        <form action="{{ url_for('admin.edit_option', option_id=option.o_id) }}" method="POST" style="margin-top:5px;">
+            <input type="text" name="new_text" value="{{ option.statement_text }}" required>
+            <label>
+                <input type="checkbox" name="correctness" {% if option.correctness %}checked{% endif %}> Correct
+            </label>
+            <button type="submit">Save</button>
+        </form>
+    </div>
 {% endfor %}
+
 
 {% endblock %}

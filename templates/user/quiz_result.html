@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results</title>
+    <link href="../../static/stylesheet.css" rel="stylesheet">
+    <style>
+        body { background-color: black; color: white; font-family: Arial, sans-serif; text-align: center; }
+        .container { width: 60%; margin: auto; padding: 20px; }
+        .result-box { padding: 10px; border-radius: 10px; margin-bottom: 10px; }
+        .correct { background-color: green; color: white; }
+        .incorrect { background-color: red; color: white; }
+        .score { font-size: 24px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Quiz Results</h1>
+    <h2>{{ user.full_name }}</h2>
+    <p class="score">Your Score: {{ score|round(2) }}%</p>
+    
+    {% for result in results %}
+    <div class="result-box {% if result.is_correct %}correct{% else %}incorrect{% endif %}">
+        <p><strong>Question:</strong> {{ result.question_text }}</p>
+        <p><strong>Your Answer:</strong> {{ result.selected_answer }}</p>
+        <p><strong>Correct Answer:</strong> {{ result.correct_answer }}</p>
+    </div>
+    {% endfor %}
+    
+    <a href="{{ url_for('dashboard') }}" style="color: yellow;">Return to Dashboard</a>
+</div>
+
+</body>
+</html>

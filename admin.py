@@ -2,13 +2,14 @@ from flask import Blueprint,render_template,request,flash,redirect,url_for,sessi
 admin = Blueprint("admin",__name__)
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime,date
+from extension import db
+from models import User,Subjects,Chapters,Mock,Question,Options
 
 
 @admin.route('/',methods=['GET','POST'])
 def dashboard():
     if 'user' not in session:
         return redirect(url_for('Login'))
-    from models import db,Mock,Subjects,Chapters,User  
     # if request.method=='GET': 
     #     search_query = request.args.get('search', '').strip()
     #     subject_filter = request.args.get('subjectfilter', '')
@@ -31,7 +32,7 @@ def dashboard():
     #     if date:
     #         query = query.filter(Mock.date==date)
     mocks = Mock.query.all()
-    users= User.query.all()
+    user = User.query.all()
     subjects = Subjects.query.all()
     chapters = Chapters.query.all()
     date = request.form.get('date')
@@ -39,18 +40,16 @@ def dashboard():
     return render_template('/admin/dashboard.html',mocks=mocks,
                            subjects=subjects,
                            chapters=chapters, 
-                           date=date,users=users)
+                           date=date,user= user)
 
 @admin.route('/manage_subject')
 def manage_sub():
     if 'user' not in session:
         return redirect(url_for('Login'))
-    from models import db,Subjects
     subjects = Subjects.query.all()
     return render_template('/admin/subject_management.html',subjects=subjects)
 @admin.route('/view_sub/<int:id>')
 def view_sub(id):
-    from models import db,Subjects
     subject = Subjects.query.get_or_404(id)
     chapters = subject.chapters
     
@@ -60,7 +59,6 @@ def view_sub(id):
 def create_sub():
     if 'user' not in session:
         return redirect(url_for('Login'))
-    from models import db,Subjects
     if request.method=="POST":
         name = request.form.get('name')
         desc = request.form.get('desc')
@@ -81,7 +79,6 @@ def create_sub():
 
 @admin.route('/delete-subject/<int:id>', methods=['POST'])
 def delete_sub(id):
-    from models import db,Subjects
     subject = Subjects.query.get_or_404(id)
     if subject:
         db.session.delete(subject)
@@ -91,7 +88,6 @@ def delete_sub(id):
 
 @admin.route('/edit-subject/<int:id>', methods=['GET', 'POST'])
 def edit_sub(id):
-    from models import Subjects,db
     subject = Subjects.query.get_or_404(id)
 
     if request.method == 'POST':
@@ -114,7 +110,6 @@ def edit_sub(id):
 
 @admin.route('/create_chapter/<int:s_id>',methods=['GET','POST'])
 def create_chapter(s_id):
-    from models import db,Chapters
     if request.method=="POST":
         name = request.form.get('name')
         desc = request.form.get('desc')
@@ -131,7 +126,6 @@ def create_chapter(s_id):
 
 @admin.route('/delete-chapter/<int:id>', methods=['POST'])
 def delete_chapter(id):
-    from models import db,Chapters
     chapter = Chapters.query.get(id)
     if chapter:
         db.session.delete(chapter)
@@ -142,7 +136,6 @@ def delete_chapter(id):
 
 @admin.route('/edit-chapter/<int:c_id>', methods=['GET', 'POST'])
 def edit_chap(c_id):
-    from models import Chapters,db
     chapter = Chapters.query.get(c_id)
 
     if request.method == 'POST':
@@ -155,7 +148,6 @@ def edit_chap(c_id):
 
 @admin.route('/add_quiz', methods=['GET', 'POST'])
 def add_quiz():
-    from models import db, Mock, Subjects, Chapters
     subjects = Subjects.query.all()  
     selected_subject = request.form.get("subject") 
     chapters = [] 
@@ -193,7 +185,6 @@ def add_quiz():
 @admin.route('/quiz/edit/<int:m_id>',methods=['GET','POST'])
 def edit_quiz(m_id):
     today=date.today().isoformat()
-    from models import db,Chapters,Mock,Subjects
     mock=Mock.query.get_or_404(m_id)
     chapter =Chapters.query.get_or_404(mock.c_id)
     chapters = Chapters.query.all()
@@ -218,7 +209,6 @@ def edit_quiz(m_id):
 
 @admin.route('/quiz/delete/<int:m_id>')
 def delete_quiz(m_id):
-    from models import db,Mock
     mock = Mock.query.get_or_404(m_id)
     db.session.delete(mock)
     db.session.commit()
@@ -228,9 +218,8 @@ def delete_quiz(m_id):
 # crud functionalites for questions
 @admin.route('/quiz/<int:q_id>/questions', methods=['GET', 'POST'])
 def manage_questions(q_id):
-    from models import db,Mock,Question
     quiz = Mock.query.get_or_404(q_id)
-    questions = Question.query.filter_by(q_id=q_id).all()
+    questions = Question.query.filter_by(m_id=q_id).all()
 
     if request.method == 'POST':
         statement = request.form.get('statement')
@@ -246,7 +235,7 @@ def manage_questions(q_id):
         elif total_marks + marks > quiz.total_marks:
             flash("Cannot exceed total marks for quiz.", "danger")
         else:
-            new_question = Question(q_id=q_id, 
+            new_question = Question(m_id=q_id, 
                                     statement_text=statement,
                                     neg_marking=negative_marking,
                                     marks=marks)
@@ -260,7 +249,6 @@ def manage_questions(q_id):
 
 @admin.route('/edit_question/<int:que_id>', methods=['POST'])
 def edit_question(que_id):
-    from models import db,Question
     question = Question.query.get_or_404(que_id)
 
     # Get new values from form
@@ -270,24 +258,24 @@ def edit_question(que_id):
 
     # Save to database
     db.session.commit()
-    flash("Question updated successfully", "success")
+    flash("Question updated successfully","success")
     
-    return redirect(url_for('admin.manage_questions', quiz_id=question.quiz_id))
+    return redirect(url_for('admin.manage_questions',q_id=question.m_id))
 
 
-@admin.route('/question/<int:que_id>/delete', methods=['POST'])
+@admin.route('/question/<int:que_id>/delete',methods=['POST'])
 def delete_question(que_id):
-    from models import db,Question
-    question = Question.query.get_or_404(que_id)
-    q_id = question.q_id
-    db.session.delete(question)
-    db.session.commit()
-    flash("Question deleted successfully!","success")
-    return redirect(url_for('admin.manage_questions',q_id=q_id))
+    if request.method=='POST':
+        question = Question.query.get_or_404(que_id)
+        q_id = question.m_id
+        db.session.delete(question)
+        db.session.commit()
+        flash("Question deleted successfully!","success")
+        return redirect(url_for('admin.manage_questions',q_id=q_id))
+    return redirect(url_for('admin.manage_questions',q_id = q_id))
 
-@admin.route('/question/<int:que_id>/options', methods=['GET', 'POST'])
+@admin.route('/question/<int:que_id>/options', methods=['GET','POST'])
 def manage_options(que_id):
-    from models import db,Question,Options
     question = Question.query.get_or_404(que_id)
     options = Options.query.filter_by(q_id=que_id).all()
 
@@ -310,7 +298,6 @@ def manage_options(que_id):
 
 @admin.route('/option/<int:option_id>/delete',methods=['POST'])
 def delete_option(option_id):
-    from models import db,Options
     option = Options.query.get_or_404(option_id)
     que_id = option.q_id
     db.session.delete(option)
@@ -318,11 +305,28 @@ def delete_option(option_id):
     flash("Option deleted successfully!","success")
     return redirect(url_for('admin.manage_options',que_id=que_id))
 
+@admin.route('/option/<int:option_id>/edit', methods=['POST'])
+def edit_option(option_id):
+    option = Options.query.get_or_404(option_id)
+    question_id = option.q_id
+    new_text = request.form.get('new_text')
+    correctness = 'correctness' in request.form  
+    if correctness:
+        all_options = Options.query.filter_by(q_id=question_id).all()
+        for opt in all_options:
+            opt.correctness = False
+    option.statement_text = new_text
+    option.correctness = correctness
+    db.session.commit()
+
+    flash("Option updated successfully!","success")
+    return redirect(url_for('admin.manage_options',que_id=question_id))
+
+
 # to render user details
 
 @admin.route('/user/<int:id>', methods=['GET'])
 def user_details(id):
-    from models import User
     user = User.query.get_or_404(id)
     return render_template('admin/user_details.html',user=user)
 
