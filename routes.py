@@ -1,26 +1,50 @@
 from flask import Blueprint,render_template,session,request,flash,redirect,url_for
 user_blueprint = Blueprint("user_blueprint",__name__)
 from models import Student_details,User,Subjects,Chapters,Mock,Question,Response,db,Options
-import io
+from sqlalchemy import or_
 import base64
 
 from datetime import datetime, timedelta
-
 @user_blueprint.route('/dashboard')
 def dashboard():
-    user= User.query.filter_by(Email=session['user']).first()
-    student = Student_details.query.filter_by(u_id = user.id).first()
+    user = User.query.filter_by(Email=session['user']).first()
+    student = Student_details.query.filter_by(u_id=user.id).first()
     subjects = Subjects.query.all()
     chapters = Chapters.query.all()
-    quizzes = Mock.query.all()
+    quizzes = Mock.query
+
+    subject_id = request.args.get('subject_id')
+    chapter_id = request.args.get('chapter_id')
+    search_query = request.args.get('query')
+
+    # Apply filters based on user input
+    if subject_id:
+        quizzes = quizzes.join(Chapters).filter(Chapters.s_id == subject_id)
+
+    if chapter_id:
+        quizzes = quizzes.filter(Mock.c_id == chapter_id)
+
+    if search_query:
+        quizzes = quizzes.join(Chapters).join(Subjects).filter(
+            db.or_(
+                Mock.remarks.ilike(f"%{search_query}%"),
+                Chapters.name.ilike(f"%{search_query}%"),
+                Subjects.name.ilike(f"%{search_query}%")
+            )
+        )
+
+    quizzes = quizzes.all()
+
+    # Handle profile picture
+    image = None
     if student and student.profile_picture:
         image = base64.b64encode(student.profile_picture).decode('utf-8')
-    else:
-        image = None  # No image available
-    return render_template('/user/dashboard.html',user=student,
+
+    return render_template('/user/dashboard.html', user=student,
                            image=image,
-                           subjects=subjects,chapters=chapters
-                           ,quizzes=quizzes)
+                           subjects=subjects, chapters=chapters,
+                           quizzes=quizzes)
+
     
 @user_blueprint.route('/test/<int:qid>/<int:sid>')
 def start_test(qid, sid):

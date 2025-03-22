@@ -10,27 +10,27 @@ from models import User,Subjects,Chapters,Mock,Question,Options
 def dashboard():
     if 'user' not in session:
         return redirect(url_for('Login'))
-    # if request.method=='GET': 
-    #     search_query = request.args.get('search', '').strip()
-    #     subject_filter = request.args.get('subjectfilter', '')
-    #     chapter_filter = request.args.get('chapterfilter', '')
-    #     date = request.args.get('date', '')
-    #     query = Mock.query.join(Chapters).join(Subjects)
-    #     if search_query:
-    #         query = query.filter(
-    #             (Mock.name.ilike(f"%{search_query}%")) |  # Search in Mock (quiz) name
-    #             (Subjects.name.ilike(f"%{search_query}%")) |  # Search in Subject name
-    #             (Chapters.name.ilike(f"%{search_query}%"))  # Search in Chapter name
-    #         )
-    #     if chapter_filter or subject_filter:
-    #         query = query.join(Chapters).join(Subjects)  
-    #     if subject_filter:
-    #         query = query.filter(Subjects.name == subject_filter)
-    #     if chapter_filter:
-    #         query = query.filter(Chapters.name == chapter_filter)
+    if request.method=='GET': 
+        search_query = request.args.get('search', '').strip()
+        subject_filter = request.args.get('subjectfilter', '')
+        chapter_filter = request.args.get('chapterfilter', '')
+        date = request.args.get('date', '')
+        query = Mock.query.join(Chapters).join(Subjects)
+        if search_query:
+            query = query.filter(
+                (Mock.name.ilike(f"%{search_query}%")) |  # Search in Mock (quiz) name
+                (Subjects.name.ilike(f"%{search_query}%")) |  # Search in Subject name
+                (Chapters.name.ilike(f"%{search_query}%"))  # Search in Chapter name
+            )
+        if chapter_filter or subject_filter:
+            query = query.join(Chapters).join(Subjects)  
+        if subject_filter:
+            query = query.filter(Subjects.name == subject_filter)
+        if chapter_filter:
+            query = query.filter(Chapters.name == chapter_filter)
 
-    #     if date:
-    #         query = query.filter(Mock.date==date)
+        if date:
+            query = query.filter(Mock.date==date)
     mocks = Mock.query.all()
     user = User.query.all()
     subjects = Subjects.query.all()

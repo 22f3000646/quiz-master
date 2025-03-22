@@ -258,26 +258,31 @@ canvas {
     </div>
     <div class="search-bar">
     <p style="font-size:30px;font-style:italic;color:#e5e7eb;">Welcome Back, {{ customer_name }}</p>
-    <form action="#" method="GET"></form>
-    <div class="select" >
-    <label for="search_option">subject:</label>
-        <select name="search_option" id="search_option">
-            {% for subject in subjects %}
-            <option value="{{subject.s_id}}" >{{subject.name}}</option>
-            {% endfor %}
-            {% for chapter in chapters %}
-            <option value="{{chapter.c_id}}" >{{ chapter.name }}</option>
-            {% endfor %}
-        </select>
-        <label for="search_option">chapter:</label>
-        <select name="search_option" id="search_option">
-            <option value="subject1" >Dbms</option>
-            <option value="subject2" >Mad 1</option>
-        </select>
-    </div>
-        <input type="text" name="query" placeholder="Search quiz" style="width:450px;">
-        <button type="submit" class="primary-btn">search</button>
-        </form>
+    <form action="{{ url_for('user_blueprint.dashboard') }}" method="GET">
+        <div class="select">
+            <label for="subject_id">Subject:</label>
+            <select name="subject_id" id="subject_id">
+                <option value="" selected disabled>-- Select Subject --</option>
+                {% for subject in subjects %}
+                    <option value="{{ subject.s_id }}">{{ subject.name }}</option>
+                {% endfor %}
+            </select>
+    
+            <label for="chapter_id">Chapter:</label>
+            <select name="chapter_id" id="chapter_id">
+                <option value="" selected disabled>-- Select Chapter --</option>
+                {% for subject in subjects %}
+                    {% for chapter in subject.chapters %}
+                        <option value="{{ chapter.c_id }}" data-subject="{{ subject.s_id }}">{{ chapter.name }}</option>
+                    {% endfor %}
+                {% endfor %}
+            </select>
+        </div>
+    
+        <input type="text" name="query" placeholder="Search quiz" style="width: 450px;">
+        <button type="submit" class="primary-btn">Search</button>
+    </form>
+    
 </div>
 </div>
     <p style="text-align:center;font-size:30px;margin:20px;padding:20px;color:#e5e7eb;">Your upcoming quizes</p>
