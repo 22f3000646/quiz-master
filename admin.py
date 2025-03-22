@@ -159,7 +159,7 @@ def add_quiz():
 
     if request.method == 'POST' and request.form.get("chapter"):  
         chapter_id = request.form.get("chapter")
-        date =datetime.strptime(request.form['date'],"%Y-%m-%d").date()
+        date =datetime.strptime(request.form['date'],"%Y-%m-%dT%H:%M")
         duration = request.form.get("duration")
         marks = request.form.get("marks")
         questions = request.form.get("questions")

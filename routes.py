@@ -1,6 +1,6 @@
 from flask import Blueprint,render_template,session,request,flash,redirect,url_for
 user_blueprint = Blueprint("user_blueprint",__name__)
-from models import Student_details,User,Subjects,Chapters,Mock,Question,Response,db
+from models import Student_details,User,Subjects,Chapters,Mock,Question,Response,db,Options
 import io
 import base64
 
@@ -28,6 +28,11 @@ def start_test(qid, sid):
     quiz = Mock.query.get(qid)
     questions = Question.query.filter_by(m_id=qid).all()
     subject = Subjects.query.get(quiz.chapters.subjects.s_id)
+    current_time = datetime.now() 
+    
+    if current_time > quiz.date:  
+        flash("The quiz submission deadline has passed!","error")
+        return redirect(url_for('dashboard'))
 
     # Fetch previously submitted responses
     responses = {resp.q_id: resp.selected_o_id for resp in Response.query.filter_by(u_id=sid).all()}
@@ -65,7 +70,7 @@ def response(q_id, qu_id, u_id):
 
     return render_template('/user/quiz.html')
 
-@app.route('/submit_quiz/<int:m_id>/<int:u_id>', methods=['GET', 'POST'])
+@user_blueprint.route('/submit_quiz/<int:m_id>/<int:u_id>', methods=['GET', 'POST'])
 def submit_quiz(m_id, u_id):
     """Handles quiz submission, stores responses, and calculates the score."""
     
@@ -73,14 +78,14 @@ def submit_quiz(m_id, u_id):
     responses = {key: request.form[key] for key in request.form}
 
     # Fetch the quiz object
-    quiz = Quiz.query.get(m_id)
+    quiz = Mock.query.get(m_id)
     if not quiz:
         flash("Quiz not found!", "danger")
         return redirect(url_for('dashboard'))
 
     # Store responses in the database
     for q_id, o_id in responses.items():
-        user_response = UserResponse(
+        user_response = Response(
             quiz_id=m_id,
             user_id=u_id,
             question_id=q_id.split("_")[1],  # Extract question ID
@@ -93,7 +98,7 @@ def submit_quiz(m_id, u_id):
     flash("Quiz submitted successfully!", "success")
     return "submitted"
 
-@app.route('/quiz_result/<int:m_id>/<int:u_id>')
+@user_blueprint.route('/quiz_result/<int:m_id>/<int:u_id>')
 def quiz_result(m_id, u_id):
     """Fetches quiz results and provides feedback."""
     

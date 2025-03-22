@@ -284,7 +284,7 @@ canvas {
     <div class="quiz">
         {% for quiz in quizzes %}
         <div class="quiz-box">
-            <div><strong>Date:</strong>{{quiz.date.strftime('%d-%m-%Y')}} </div>
+            <div><strong>Date:</strong>{{quiz.date.strftime('%d-%m-%Y T%H:%M')}} </div>
             <div><strong>Subject:</strong>{{quiz.chapters.subjects.name}}</div>
             <div><strong>Chapter:</strong> {{quiz.chapters.name}}</div>
             <div><strong>Total Marks:</strong>{{quiz.total_marks}}</div>
