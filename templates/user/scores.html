@@ -1,146 +1,64 @@
 {% extends 'user/dashboard.html' %}
+
 {% block title %}Results{% endblock %}
+
 {% block content %}
 <style>
-    .quiz{
-        display:grid;
-        grid-template-columns: auto auto auto auto auto;
+    .quiz {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        justify-content: center;
     }
-    .quiz-card{
-        margin:10px;
-        margin-left:0px;
+    .quiz-card {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 10px;
+        background: #f9f9f9;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .quiz-card h3 {
+        margin-bottom: 10px;
+    }
+    .quiz-card button {
+        background-color: green;
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
     }
 </style>
-<!-- <div class="quiz-container">
-    {% for service in services %}
+
+<h1 style="text-align:center;">Your Quiz Results</h1>
+<form method="GET" action="{{ url_for('user_blueprint.result') }}">
+    <label for="time_filter">Show results from:</label>
+    <select name="time_filter">
+        <option value="all">All Time</option>
+        <option value="7">Last 7 Days</option>
+        <option value="30">Last 30 Days</option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+{% if quiz_results %}
+<div class="quiz">
+    {% for result in quiz_results %}
     <div class="quiz-card">
-        <h3>Quiz ID: {{ service.request.req_id }}</h3>
-        <p><strong>Number of Questions:</strong> {{ service.name }}</p>
-        <p><strong>Date:</strong> {{ service.professsional.first_name }}</p>
-        <p><strong>Duration:</strong> {{ service.professsional.phone_number }} mins</p>
-        <p><strong>Marks Obtained:</strong> {{ service.marks_obtained }}</p>
-        <p><strong>Total Marks:</strong> {{ service.total_marks }}</p>
-        <p><strong>AIR:</strong>{{services.rank}}/p>
-        <div class="quiz-action">
-            {% if service.request.status == "accepted" %}
-            <a href="#" class="action-btn close-btn">Close it?</a>
-            {% else %}
-            <span class="status">{{ service.request.status }}</span>
-            {% endif %}
-        </div> -->
-        <!-- {% endfor %} -->
-         <h1 style="text-align:center;">Your quiz Results</h1>
-        <div class="quiz">
-        <div class="quiz-card">
-            <h3>Quiz ID: 101</h3>
-            <p><strong>Number of Questions:</strong> 30</p>
-            <p><strong>Date:</strong> 01/01/2025</p>
-            <p><strong>Duration:</strong> 30 mins</p>
-            <p><strong>Marks Obtained:</strong> 40</p>
-            <p><strong>Total Marks:</strong> 50</p>
-            <p><strong>Rank:</strong>50</p>
-            <p><strong>Total Participants:</strong>100</p>
-            <button class="btn"style= "background-color:green;">see answers</button>
-        </div>
-        <div class="quiz-card">
-            <h3>Quiz ID: 101</h3>
-            <p><strong>Number of Questions:</strong> 30</p>
-            <p><strong>Date:</strong> 01/01/2025</p>
-            <p><strong>Duration:</strong> 30 mins</p>
-            <p><strong>Marks Obtained:</strong> 40</p>
-            <p><strong>Total Marks:</strong> 50</p>
-            <p><strong>Rank:</strong>50</p>
-            <p><strong>Total Participants:</strong>100</p>
-            <button class="btn"style= "background-color:green;">see answers</button>
-        </div>
-        <div class="quiz-card">
-            <h3>Quiz ID: 101</h3>
-            <p><strong>Number of Questions:</strong> 30</p>
-            <p><strong>Date:</strong> 01/01/2025</p>
-            <p><strong>Duration:</strong> 30 mins</p>
-            <p><strong>Marks Obtained:</strong> 40</p>
-            <p><strong>Total Marks:</strong> 50</p>
-            <p><strong>Rank:</strong>50</p>
-            <p><strong>Total Participants:</strong>100</p>
-            <button class="btn"style= "background-color:green;">see answers</button>
-        </div>
-        <div class="quiz-card">
-            <h3>Quiz ID: 101</h3>
-            <p><strong>Number of Questions:</strong> 30</p>
-            <p><strong>Date:</strong> 01/01/2025</p>
-            <p><strong>Duration:</strong> 30 mins</p>
-            <p><strong>Marks Obtained:</strong> 40</p>
-            <p><strong>Total Marks:</strong> 50</p>
-            <p><strong>Rank:</strong>50</p>
-            <p><strong>Total Participants:</strong>100</p>
-            <button class="btn"style= "background-color:green;">see answers</button>
-        </div>
-        <div class="quiz-card">
-            <h3>Quiz ID: 101</h3>
-            <p><strong>Number of Questions:</strong> 30</p>
-            <p><strong>Date:</strong> 01/01/2025</p>
-            <p><strong>Duration:</strong> 30 mins</p>
-            <p><strong>Marks Obtained:</strong> 40</p>
-            <p><strong>Total Marks:</strong> 50</p>
-            <p><strong>Rank:</strong>50</p>
-            <p><strong>Total Participants:</strong>100</p>
-            <button class="btn"style= "background-color:green;">see answers</button>
-        </div>
-        <div class="quiz-card">
-            <h3>Quiz ID: 101</h3>
-            <p><strong>Number of Questions:</strong> 30</p>
-            <p><strong>Date:</strong> 01/01/2025</p>
-            <p><strong>Duration:</strong> 30 mins</p>
-            <p><strong>Marks Obtained:</strong> 40</p>
-            <p><strong>Total Marks:</strong> 50</p>
-            <p><strong>Rank:</strong>50</p>
-            <p><strong>Total Participants:</strong>100</p>
-            <button class="btn"style= "background-color:green;">see answers</button>
-        </div>
-        <div class="quiz-card">
-            <h3>Quiz ID: 101</h3>
-            <p><strong>Number of Questions:</strong> 30</p>
-            <p><strong>Date:</strong> 01/01/2025</p>
-            <p><strong>Duration:</strong> 30 mins</p>
-            <p><strong>Marks Obtained:</strong> 40</p>
-            <p><strong>Total Marks:</strong> 50</p>
-            <p><strong>Rank:</strong>50</p>
-            <p><strong>Total Participants:</strong>100</p>
-            <button class="btn"style= "background-color:green;">see answers</button>
-        </div>
-        <div class="quiz-card">
-            <h3>Quiz ID: 101</h3>
-            <p><strong>Number of Questions:</strong> 30</p>
-            <p><strong>Date:</strong> 01/01/2025</p>
-            <p><strong>Duration:</strong> 30 mins</p>
-            <p><strong>Marks Obtained:</strong> 40</p>
-            <p><strong>Total Marks:</strong> 50</p>
-            <p><strong>Rank:</strong>50</p>
-            <p><strong>Total Participants:</strong>100</p>
-            <button class="btn"style= "background-color:green;">see answers</button>
-        </div>
-        <div class="quiz-card">
-            <h3>Quiz ID: 101</h3>
-            <p><strong>Number of Questions:</strong> 30</p>
-            <p><strong>Date:</strong> 01/01/2025</p>
-            <p><strong>Duration:</strong> 30 mins</p>
-            <p><strong>Marks Obtained:</strong> 40</p>
-            <p><strong>Total Marks:</strong> 50</p>
-            <p><strong>Rank:</strong>50</p>
-            <p><strong>Total Participants:</strong>100</p>
-            <button class="btn"style= "background-color:green;">see answers</button>
-        </div>
-        <div class="quiz-card">
-            <h3>Quiz ID: 101</h3>
-            <p><strong>Number of Questions:</strong> 30</p>
-            <p><strong>Date:</strong> 01/01/2025</p>
-            <p><strong>Duration:</strong> 30 mins</p>
-            <p><strong>Marks Obtained:</strong> 40</p>
-            <p><strong>Total Marks:</strong> 50</p>
-            <p><strong>Rank:</strong>50</p>
-            <p><strong>Total Participants:</strong>100</p>
-            <button class="btn"style= "background-color:green;">see answers</button>
-        </div>
+        <h3>Quiz ID: {{ result.quiz_id }}</h3>
+        <p><strong>Number of Questions:</strong> {{ result.num_questions }}</p>
+        <p><strong>Date:</strong> {{ result.date.strftime('%d/%m/%Y') }}</p>
+        <p><strong>Duration:</strong> {{ result.duration }} mins</p>
+        <p><strong>Marks Obtained:</strong> {{ result.marks_obtained }}</p>
+        <p><strong>Total Marks:</strong> {{ result.total_marks }}</p>
+        <p><strong>Remarks:</strong> {{ result.remark or "N/A" }}</p>
+        < a href="{{url_for('user_blueprint.responsed',q_id=result.quiz_id)}}" <button>See Answers</button>
     </div>
+    {% endfor %}
 </div>
+{% else %}
+    <p style="text-align:center;">No quiz results available.</p>
+{% endif %}
+
 {% endblock %}

@@ -1,6 +1,6 @@
 from flask import Blueprint,render_template,session,request,flash,redirect,url_for
 user_blueprint = Blueprint("user_blueprint",__name__)
-from models import Student_details,User,Subjects,Chapters,Mock,Question,Response,db,Options
+from models import Student_details,User,Subjects,Chapters,Mock,Question,Response,db,Options,scores
 from sqlalchemy import or_
 import base64
 
@@ -122,47 +122,71 @@ def submit_quiz(m_id, u_id):
     flash("Quiz submitted successfully!", "success")
     return "submitted"
 
-@user_blueprint.route('/quiz_result/<int:m_id>/<int:u_id>')
-def quiz_result(m_id, u_id):
-    """Fetches quiz results and provides feedback."""
-    
-    # Fetch quiz details
-    quiz = Mock.query.get(m_id)
-    user = Student_details.query.get(u_id)
-    
-    if not quiz or not user:
-        flash("Invalid quiz or user.", "danger")
-        return redirect(url_for('dashboard'))
-
-    # Fetch user's responses for the quiz
-    responses = Response.query.filter_by(u_id=u_id).all()
-
-    # Prepare result data
-    results = []
-    correct_count = 0
-    total_questions = len(quiz.questions)
-
-    for response in responses:
-        question = Question.query.get(response.q_id)
-        correct_option = Options.query.filter_by(q_id=question.q_id, correctness=True).first()
-        selected_option = Options.query.get(response.selected_o_id)
-
-        is_correct = correct_option.o_id == response.selected_o_id if selected_option else False
-        if is_correct:
-            correct_count += 1
-        
-        results.append({
-            "question_text": question.statement_text,
-            "selected_answer": selected_option.statement_text if selected_option else "Not Answered",
-            "correct_answer": correct_option.statement_text if correct_option else "No correct option",
-            "is_correct": is_correct
-        })
-
-    # Calculate score
-    score = (correct_count / total_questions) * 100 if total_questions > 0 else 0
-
-    return render_template("quiz_result.html", user=user, quiz=quiz, results=results, score=score)
-
-@user_blueprint.route('/result')
+@user_blueprint.route('/result', methods=['GET'])
 def result():
-    return render_template('/user/scores.html')
+    user = User.query.filter_by(Email=session['user']).first()
+    student = Student_details.query.filter_by(u_id=user.id).first()
+
+    # Get user-selected filter (default to 'all')
+    time_filter = request.args.get('time_filter', 'all')
+
+    query = (
+        db.session.query(
+            Mock.m_id,
+            Mock.no_of_ques,
+            Mock.date,
+            Mock.duration,
+            Mock.total_marks,
+            scores.score,
+            scores.remark
+        )
+        .join(scores, scores.m_id == Mock.m_id)
+        .filter(scores.u_id == student.u_id)
+    )
+
+    if time_filter != 'all':
+        days = int(time_filter)
+        date_limit = datetime.now() - timedelta(days=days)
+        query = query.filter(Mock.date >= date_limit)
+
+    quiz_results = query.order_by(Mock.date.desc()).all()
+
+    return render_template('user/scores.html', user=student, quiz_results=quiz_results)
+
+@user_blueprint.route('/response/<int:q_id>', methods=['GET'])
+def responsed(q_id):
+    user = User.query.filter_by(Email=session['user']).first()
+    student = Student_details.query.filter_by(u_id=user.id).first()
+
+    # Fetch quiz details
+    quiz = Mock.query.filter_by(m_id=q_id).first()
+    
+    if not quiz:
+        return "Quiz not found", 404
+
+    # Fetch questions and options
+    questions = (
+        db.session.query(
+            Question.q_id,
+            Question.statement_text,
+            Question.statement_pic_name,
+            Question.statement_type,
+            Options.o_id,
+            Options.statement_text.label("option_text"),
+            Options.statement_pic_name.label("option_pic"),
+            Options.correctness,
+            Response.selected_o_id
+        )
+        .join(Options, Options.q_id == Question.q_id)
+        .outerjoin(Response, (Response.q_id == Question.q_id) & (Response.u_id == student.u_id))
+        .filter(Question.m_id == q_id)
+        .order_by(Question.q_id)
+        .all()
+    )
+
+    return render_template(
+        'user/response.html',
+        user=student,
+        quiz=quiz,
+        questions=questions
+    )

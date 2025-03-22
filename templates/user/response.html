@@ -1,0 +1,44 @@
+{% extends 'user/dashboard.html' %}
+
+{% block title %}Quiz Answers{% endblock %}
+
+{% block content %}
+<style>
+    .question-card {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #f9f9f9;
+    }
+    .correct { color: green; font-weight: bold; }
+    .incorrect { color: red; font-weight: bold; }
+</style>
+
+<h1 style="text-align:center;">Quiz Answers</h1>
+
+<h2>Quiz ID: {{ quiz.m_id }}</h2>
+<p><strong>Date:</strong> {{ quiz.date.strftime('%d/%m/%Y') }}</p>
+<p><strong>Duration:</strong> {{ quiz.duration }} mins</p>
+<p><strong>Total Marks:</strong> {{ quiz.total_marks }}</p>
+
+<!-- Display Questions & Answers -->
+{% for question in questions %}
+<div class="question-card">
+    <h3>Q{{ loop.index }}: {{ question.statement_text }}</h3>
+    {% if question.statement_pic %}
+        <img src="{{ url_for('user_blueprint.get_image', filename=question.statement_pic) }}" alt="Question Image" width="200">
+    {% endif %}
+    
+    <ul>
+        <li {% if question.correctness %} class="correct" {% endif %}>
+            {{ question.option_text }}
+            {% if question.selected_o_id == question.o_id %}
+                <span> (Your Answer)</span>
+            {% endif %}
+        </li>
+    </ul>
+</div>
+{% endfor %}
+
+{% endblock %}
