@@ -30,7 +30,15 @@
         cursor: pointer;
     }
 </style>
-
+{% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 <h1 style="text-align:center;">Your Quiz Results</h1>
 <form method="GET" action="{{ url_for('user_blueprint.result') }}">
     <label for="time_filter">Show results from:</label>

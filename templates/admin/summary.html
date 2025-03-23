@@ -1,0 +1,95 @@
+{% extends "admin/dashboard.html" %}
+{% block content %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        canvas {
+            background-color: #222;
+            padding: 10px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+
+        <div class="stats">
+            <div class="stat-box">
+                <h3>Total Users</h3>
+                <p>{{ total_users }}</p>
+            </div>
+            <div class="stat-box">
+                <h3>Total Subjects</h3>
+                <p>{{ total_subjects }}</p>
+            </div>
+            <div class="stat-box">
+                <h3>Total Chapters</h3>
+                <p>{{ total_chapters }}</p>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <h3>Total Mocks</h3>
+                <p>{{ total_mocks }}</p>
+            </div>
+            <div class="stat-box">
+                <h3>Total Questions</h3>
+                <p>{{ total_questions }}</p>
+            </div>
+            <div class="stat-box">
+                <h3>Total Scores Recorded</h3>
+                <p>{{ total_scores }}</p>
+            </div>
+        </div>
+
+        <h2>Average Scores Per Mock</h2>
+        <canvas id="scoreChart"></canvas>
+
+        <script>
+            var ctx = document.getElementById('scoreChart').getContext('2d');
+            var scoreChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ mock_ids|tojson }},
+                    datasets: [{
+                        label: 'Average Score',
+                        data: {{ avg_scores|tojson }},
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+    </div>
+{% endblock %}

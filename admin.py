@@ -3,51 +3,80 @@ admin = Blueprint("admin",__name__)
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime,date
 from extension import db
-from models import User,Subjects,Chapters,Mock,Question,Options
+from models import User,Subjects,Chapters,Mock,Question,Options,Student_details,scores
 
 
-@admin.route('/',methods=['GET','POST'])
+@admin.route('/', methods=['GET', 'POST'])
 def dashboard():
     if 'user' not in session:
         return redirect(url_for('Login'))
-    if request.method=='GET': 
-        search_query = request.args.get('search', '').strip()
-        subject_filter = request.args.get('subjectfilter', '')
-        chapter_filter = request.args.get('chapterfilter', '')
-        date = request.args.get('date', '')
-        query = Mock.query.join(Chapters).join(Subjects)
-        if search_query:
-            query = query.filter(
-                (Mock.name.ilike(f"%{search_query}%")) |  # Search in Mock (quiz) name
-                (Subjects.name.ilike(f"%{search_query}%")) |  # Search in Subject name
-                (Chapters.name.ilike(f"%{search_query}%"))  # Search in Chapter name
-            )
-        if chapter_filter or subject_filter:
-            query = query.join(Chapters).join(Subjects)  
-        if subject_filter:
-            query = query.filter(Subjects.name == subject_filter)
-        if chapter_filter:
-            query = query.filter(Chapters.name == chapter_filter)
 
-        if date:
-            query = query.filter(Mock.date==date)
-    mocks = Mock.query.all()
-    user = User.query.all()
+    # Get Filters from GET Request
+    search_query = request.args.get('search', '').strip()
+    subject_filter = request.args.get('subjectfilter', '')
+    chapter_filter = request.args.get('chapterfilter', '')
+    date_filter = request.args.get('date', '')
+
+    # Base Query with Joins
+    query = Mock.query.join(Chapters).join(Subjects)
+    if search_query:
+        query = query.filter(
+            (Subjects.name.ilike(f"%{search_query}%")) |
+            (Chapters.name.ilike(f"%{search_query}%"))
+        )
+
+    # Apply Subject & Chapter Filters
+    if subject_filter:
+        query = query.filter(Subjects.name == subject_filter)
+    if chapter_filter:
+        query = query.filter(Chapters.name == chapter_filter)
+
+    if date_filter:
+        try:
+            selected_date = datetime.strptime(date_filter, '%Y-%m-%d').date()  # Convert string to Date
+            query = query.filter(db.func.date(Mock.date) == selected_date)  # Compare only the date part
+        except ValueError:
+            flash("Invalid date format. Please use YYYY-MM-DD.", "danger")
+
+    mocks = query.all()
+    if not mocks:
+        mocks = []
+    # Fetch All Users, Subjects, and Chapters
     subjects = Subjects.query.all()
     chapters = Chapters.query.all()
-    date = request.form.get('date')
+    search_query = request.args.get('usersearch', '').strip()  # Get search input
 
-    return render_template('/admin/dashboard.html',mocks=mocks,
-                           subjects=subjects,
-                           chapters=chapters, 
-                           date=date,user= user)
+    query = Student_details.query  # Start query
+
+    if search_query:
+        query = query.filter(Student_details.full_name.ilike(f"%{search_query}%"))  
+
+    users = query.all()  
+
+    return render_template(
+        '/admin/dashboard.html',
+        mocks=mocks,
+        subjects=subjects,
+        chapters=chapters,  
+        users=users
+    )
+
 
 @admin.route('/manage_subject')
 def manage_sub():
     if 'user' not in session:
         return redirect(url_for('Login'))
-    subjects = Subjects.query.all()
-    return render_template('/admin/subject_management.html',subjects=subjects)
+
+    search_subject = request.args.get('subject_search', '').strip()
+
+    # Filter subjects based on search
+    if search_subject:
+        subjects = Subjects.query.filter(Subjects.name.ilike(f"%{search_subject}%")).all()
+    else:
+        subjects = Subjects.query.all()
+
+    return render_template('admin/subject_management.html', subjects=subjects)
+
 @admin.route('/view_sub/<int:id>')
 def view_sub(id):
     subject = Subjects.query.get_or_404(id)
@@ -83,7 +112,7 @@ def delete_sub(id):
     if subject:
         db.session.delete(subject)
         db.session.commit()
-        flash("Subject deleted successfully!","success")
+        flash("Subject deleted successfully!","danger")
     return redirect(url_for('admin.manage_sub'))
 
 @admin.route('/edit-subject/<int:id>', methods=['GET', 'POST'])
@@ -330,4 +359,27 @@ def user_details(id):
     user = User.query.get_or_404(id)
     return render_template('admin/user_details.html',user=user)
 
+@admin.route('/summary')
+def admin_summary():
+    total_users = User.query.count()
+    total_subjects = Subjects.query.count()
+    total_chapters = Chapters.query.count()
+    total_mocks = Mock.query.count()
+    total_questions = Question.query.count()
+    total_scores = scores.query.count()
+
+    # Get scores data
+    score_data = db.session.query(scores.m_id, db.func.avg(scores.score)).group_by(scores.m_id).all()
+    mock_ids = [m_id for m_id, _ in score_data]
+    avg_scores = [round(avg, 2) for _, avg in score_data]
+
+    return render_template('admin/summary.html',
+                           total_users=total_users,
+                           total_subjects=total_subjects,
+                           total_chapters=total_chapters,
+                           total_mocks=total_mocks,
+                           total_questions=total_questions,
+                           total_scores=total_scores,
+                           mock_ids=mock_ids,
+                           avg_scores=avg_scores)
 

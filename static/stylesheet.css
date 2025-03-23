@@ -65,3 +65,21 @@ input{
 .btn:hover {
     background-color: #45a049;
 }
+.alert-danger{
+    padding: 10px; 
+    margin-bottom: 15px; 
+    border-radius: 5px; 
+    font-size: 14px; 
+    color: white;
+    background-color:red;
+    border: 1px solid darkred;
+}
+.alert-success{
+padding: 10px; 
+    margin-bottom: 15px; 
+    border-radius: 5px; 
+    font-size: 14px; 
+    color: white;
+    background-color:green;
+    border: 1px solid darkgreen;
+}

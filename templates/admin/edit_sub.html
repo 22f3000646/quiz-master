@@ -10,17 +10,15 @@
 
 <body>
     <div class="container">
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=True) %}
+    {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="alert alert-{{ 'danger' if category == 'unsuccess' else 'success' }}">
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
                     {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
-        {% endwith %}
-
+    {% endwith %}
         <!-- Edit Subject Form -->
         <form action="{{ url_for('admin.edit_sub',id=sub.s_id) }}" method="POST">
             <h1 style="text-align:center;">Edit Subject</h1>

@@ -14,7 +14,15 @@
     .correct { color: green; font-weight: bold; }
     .incorrect { color: red; font-weight: bold; }
 </style>
-
+{% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 <h1 style="text-align:center;">Quiz Answers</h1>
 
 <h2>Quiz ID: {{ quiz.m_id }}</h2>

@@ -7,19 +7,17 @@
     <title>Edit Subject</title>
     <link rel="stylesheet" href="../../static/stylesheet.css">
 </head>
-
+</head>
 <body>
-    <div class="container">
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ 'danger' if category == 'unsuccess' else 'success' }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 
         <!-- Edit chapter Form -->
         <form action="{{ url_for('admin.edit_chap', c_id=chap.c_id) }}" method="POST">

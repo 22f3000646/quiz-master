@@ -8,19 +8,18 @@
     <p><strong>Role:</strong> {{ user.role }}</p>
 </div>
 
-{% if user.role == "student" and user.student_details %}
     <h3>Student Details</h3>
     <div class="student-info">
-        <p><strong>Full Name:</strong> {{ user.student_details.full_name }}</p>
-        <p><strong>Qualification:</strong> {{ user.student_details.qualification }}</p>
-        <p><strong>Date of Birth:</strong> {{ user.student_details.dob.strftime('%d-%m-%Y') if user.student_details.dob else 'N/A' }}</p>
-        <p><strong>Phone:</strong> {{ user.student_details.phone if user.student_details.phone else 'N/A' }}</p>
+        <p><strong>Full Name:</strong> {{ user.Student_details.full_name }}</p>
+        <p><strong>Qualification:</strong> {{ user.Student_details.qualification }}</p>
+        <p><strong>Date of Birth:</strong> {{ user.Student_details.dob.strftime('%d-%m-%Y') if user.Student_details.dob else 'N/A' }}</p>
+        <p><strong>Phone:</strong> {{ user.Student_details.phone if user.Student_details.phone else 'N/A' }}</p>
         
-        {% if user.student_details.pic %}
+        {% if user.Student_details.pic %}
             <img src="data:image/jpeg;base64,{{ user.student_details.pic | b64encode }}" alt="Profile Picture" width="150">
         {% endif %}
     </div>
-{% endif %}
+
 
 <h3>Quiz Scores</h3>
 {% if user.scores %}

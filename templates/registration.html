@@ -51,32 +51,45 @@
             text-decoration: underline;
             
         }
-    .alert-danger{
+        .alert-danger{
+            padding: 10px; 
+            margin-bottom: 15px; 
+            border-radius: 5px; 
+            font-size: 14px; 
+            color: white;
+            background-color:red;
+            border: 1px solid darkred;
+        }
+    .alert-success{
         padding: 10px; 
-        margin-bottom: 15px; 
-        border-radius: 5px; 
-        font-size: 14px; 
-        color: white;
-        background-color:red;
-        border: 1px solid darkred;
+            margin-bottom: 15px; 
+            border-radius: 5px; 
+            font-size: 14px; 
+            color: white;
+            background-color:green;
+            border: 1px solid darkgreen;
     }
     </style>
 </head>
 <body>
-    {% if form.email.errors %}
-    <span style="color: red;">{{ form.email.errors[0] }}</span>
-{% endif %}
-{% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class="alert alert-{{ 'danger' if category == 'unsuccess' else 'success' }}" >
-                {{ message }}
-            </div>
+    <div class="container">
+        {% for field, errors in form.errors.items() %}
+        {% for error in errors %}
+            <span style="color: red;">{{ error }}</span><br>
         {% endfor %}
-    {% endif %}
-{% endwith %}
+    {% endfor %}
 
-<form class="container" method="POST" action="{{ url_for('registration') }}" enctype="multipart/form-data">
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'unsuccess' else 'success' }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+<form method="POST" action="{{ url_for('registration') }}" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <h1 style="margin-top:0px; text-align:center;">Registration Form</h1>
     <div class="form">

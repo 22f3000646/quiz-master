@@ -1,5 +1,129 @@
 {% extends "admin/dashboard.html" %}
 {% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        margin: 20px;
+        padding: 20px;
+    }
+
+    h2, h3, p, legend, label {
+        color: #ffffff;
+    }
+
+    .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    .alert-success {
+        background-color: #2e7d32;
+        color: #ffffff;
+    }
+
+    .alert-danger {
+        background-color: #c62828;
+        color: #ffffff;
+    }
+
+    .btn {
+        background-color: #ff9800;
+        color: #121212;
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .btn:hover {
+        background-color: #e68900;
+    }
+
+    form {
+        background: #1e1e1e;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+    }
+
+    input[type="number"], textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #333;
+        border-radius: 4px;
+        background-color: #252525;
+        color: #ffffff;
+    }
+
+    button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background-color: #388e3c;
+    }
+
+    .question-box {
+        background: #1e1e1e;
+        padding: 15px;
+        border: 1px solid #333;
+        border-radius: 5px;
+        margin-top: 10px;
+        box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.1);
+    }
+
+    .question-box p {
+        margin: 5px 0;
+        color: #ffffff;
+    }
+
+    .question-box form {
+        display: inline-block;
+    }
+
+    .question-box button {
+        background-color: #d32f2f;
+    }
+
+    .question-box button:hover {
+        background-color: #b71c1c;
+    }
+
+    a {
+        display: inline-block;
+        padding: 5px 10px;
+        margin-top: 5px;
+        background-color: #2196f3;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    a:hover {
+        background-color: #1976d2;
+    }
+</style>
 
 <h2>Manage Questions for "{{ quiz.chapters.name }}"</h2>
 <p>Total Questions Allowed: {{ quiz.no_of_ques }}</p>
@@ -7,14 +131,15 @@
 <p>Questions Added: {{ questions|length }}</p>
 <p>Marks Used: {{ questions | sum(attribute='marks') }}</p>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class="flash {{ category }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-
+{% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 <form method="POST">
     <fieldset>
         <legend>Add New Question</legend>

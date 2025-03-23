@@ -1,6 +1,15 @@
 {% extends "admin/dashboard.html" %}
 {% block title %}subject{% endblock %}
 {% block content %}
+<script>
+    function confirmDelete(event) {
+        event.preventDefault(); // Prevent form submission
+    
+        if (confirm("Are you sure you want to delete this?")) {
+            event.target.submit(); // Submit form if confirmed
+        }
+    }
+</script>
 <style>
     .container p{
         text-align: center;
@@ -31,6 +40,10 @@
         font-size: 18px;
 }
 </style>
+<form method="GET" action="{{ url_for('admin.manage_sub') }}" style="margin-bottom: 20px;">
+    <input type="text" name="subject_search" placeholder="Search Subjects..." value="{{ request.args.get('subject_search', '') }}">
+    <button type="submit" class="btn">Search</button>
+</form>
 <button class="prim-btn"><a href="{{url_for('admin.create_sub')}}">Add New Subject</a></button>
 <div style=" display: grid;grid-template-columns: auto auto auto auto;">
     {% for sub in subjects %}
@@ -41,7 +54,7 @@
     
     <button class="btn view-btn" style="display:inline-block;margin:15px;" id="viewButton" class="btn view-btn" data-sub-id="{{ sub.s_id }}" >View</button>
     <button class="btn" style="display:inline-block;margin:15px;"><a href="{{url_for('admin.create_chapter',s_id=sub.s_id)}}"> Add chapter</a></button>
-    <form action="{{ url_for('admin.delete_sub',id=sub.s_id) }}" method="POST" style="display:inline-block;">
+    <form action="{{ url_for('admin.delete_sub',id=sub.s_id) }}" method="POST" style="display:inline-block;" onsubmit="confirmDelete(event);">
         <button class="btn" style="margin:15px; background-color:red; color:white; border:none;">Delete</button>
     </form>
     <button class="btn" style="display:inline-block;margin:15px;"><a href="{{ url_for('admin.edit_sub',id=sub.s_id) }}"> Edit Subject </a></button>
