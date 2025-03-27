@@ -1,198 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz</title>
-    <link href="../../static/stylesheet.css" rel="stylesheet">
-    <style>
-        img {
-            height: 200px;
-            width: 200px;
-            border: 1px solid white;
-            padding: 8px;
-            border-radius: 16px;
-            object-fit: cover;
-        }
-        .btn {
-            padding: 14px 80px;
-            background-color: red;
-            color: white;
-            cursor: pointer;
-        }
-        .sidebar {
-            border: 1px solid white;
-            margin: 10px;
-            padding: 20px;
-            font-size: 18px;
-            height: 100vh;
-            color: white;
-            border-radius: 16px;
-            background-color: rgba(40, 40, 40);
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: 20% 60% 20%;
-        }
-        .questions {
-            border: 1px solid white;
-            margin: 10px;
-            padding: 20px;
-            font-size: 18px;
-            border-radius: 16px;
-            background-color: rgb(40, 40, 40);
-        }
-        .question-no {
-            border: 1px solid white;
-            padding: 20px;
-            font-size: 10px;
-            border-radius: 16px;
-            background-color: rgb(40, 40, 40);
-        }
-        .box {
-            padding: 2px;
-            text-align: center;
-            font-size: 20px;
-            border: 1px solid white;
-            border-radius: 6px;
-            height: 70px;
-            width: 70px;
-            margin: 3px;
-            line-height: 50px;
-            display: inline-block;
-            cursor: pointer;
-        }
-        .questions p {
-            font-size: 20px;
-            font-weight: bold;
-            color: white;
-        }
-        input[type="radio"] {
-            height: 22px;
-            cursor: pointer;
-            width: 10%;
-        }
-        label {
-            font-size: 22px;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            margin: 5px;
-        }
-        label:hover {
-            color: #007bff;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz</title>
+  <link href="../../static/stylesheet.css" rel="stylesheet">
+  <style>
+    img {
+      height: 200px;
+      width: 200px;
+      border: 1px solid white;
+      padding: 8px;
+      border-radius: 16px;
+      object-fit: cover;
+    }
+    .btn {
+      padding: 14px 80px;
+      background-color: red;
+      color: white;
+      cursor: pointer;
+    }
+    .sidebar {
+      border: 1px solid white;
+      margin: 10px;
+      padding: 20px;
+      font-size: 18px;
+      height: 100vh;
+      color: white;
+      border-radius: 16px;
+      background-color: rgba(40, 40, 40);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 20% 60% 20%;
+    }
+    .questions {
+      border: 1px solid white;
+      margin: 10px;
+      padding: 20px;
+      font-size: 18px;
+      border-radius: 16px;
+      background-color: rgb(40, 40, 40);
+    }
+    .question-no {
+      border: 1px solid white;
+      padding: 20px;
+      font-size: 10px;
+      border-radius: 16px;
+      background-color: rgb(40, 40, 40);
+    }
+    .box {
+      padding: 2px;
+      text-align: center;
+      font-size: 20px;
+      border: 1px solid white;
+      border-radius: 6px;
+      height: 70px;
+      width: 70px;
+      margin: 3px;
+      line-height: 50px;
+      display: inline-block;
+      cursor: pointer;
+    }
+    /* Mark answered questions in green */
+    .box.answered {
+      background-color: green;
+    }
+    .questions p {
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+    }
+    input[type="radio"] {
+      height: 22px;
+      cursor: pointer;
+      width: 10%;
+    }
+    label {
+      font-size: 22px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      margin: 5px;
+    }
+    label:hover {
+      color: #007bff;
+    }
+  </style>
 </head>
 
 <body style="background-color: black; color: white;">
-    {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <div class="grid">
-        <div class="sidebar">
-            <img src="data:image/jpeg;base64,{{ image }}" alt="candidate image">
-            <p>Name: {{ user.full_name }}</p>
-            <p>Email: {{ user.user.Email }}</p>
-            <p>Subject: {{ subject.name }}</p>
-            <p>Chapter: {{ quiz.chapters.name }}</p>
-            <p>Total Questions: {{ quiz.no_of_ques }}</p>
-            <p>Date: {{ quiz.date.strftime('%d-%m-%y') }}</p>
-            <p>Duration: {{ quiz.duration }} minutes</p>
-            <strong id="timer" style="color: green;">Time Left: Loading...</strong>
-
-            <!-- Submit button dynamically calls Flask route -->
-            <button class="btn" id="submit-btn" style="margin-top: 20px;" onclick="submitQuiz()">Submit</button>
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+          {{ message }}
         </div>
-
-        <div class="questions">
-            <form id="quiz-form" method="POST">
-                {% for question in questions %}
-                <div class="allquestion" id="question-{{ loop.index }}"
-                    {% if loop.index == 1 %} style="display: block;" {% else %} style="display: none;" {% endif %}>
-
-                    <h2>Q.{{ loop.index }} {{ question.statement_text }}</h2>
-                    {% for option in question.option %}
-                    <div>
-                        <input type="radio" id="option_{{ option.o_id }}" name="q_{{ question.q_id }}" value="{{ option.o_id }}"
-                            {% if responses and responses.get(question.q_id) == option.o_id %} checked {% endif %}>
-                        <label for="option_{{ option.o_id }}">{{ option.statement_text }}</label>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endfor %}
-            </form>
-
-            <div class="question-no">
-                {% for i in questions %}
-                <button class="box" onclick="showques({{ loop.index }})" id="box-{{ loop.index }}">{{ loop.index }}</button>
-                {% endfor %}
-            </div>
-        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <div class="grid">
+    <div class="sidebar">
+      <img src="data:image/jpeg;base64,{{ image }}" alt="candidate image">
+      <p>Name: {{ user.full_name }}</p>
+      <p>Email: {{ user.user.Email }}</p>
+      <p>Subject: {{ subject.name }}</p>
+      <p>Chapter: {{ quiz.chapters.name }}</p>
+      <p>Total Questions: {{ quiz.no_of_ques }}</p>
+      <p>Date: {{ quiz.date.strftime('%d-%m-%y') }}</p>
+      <p>Duration: {{ quiz.duration }} minutes</p>
+      <strong id="timer" style="color: green;">Time Left: Loading...</strong>
+      <!-- Submit button dynamically calls Flask route -->
+      <button class="btn" id="submit-btn" style="margin-top: 20px;" onclick="submitQuiz()">Submit</button>
     </div>
 
-    <script>
-        function showques(index) { 
-            let allquestions = document.querySelectorAll('.allquestion');
-            allquestions.forEach(q => q.style.display = 'none');
-            let selectedquestion = document.getElementById('question-' + index);
-            if (selectedquestion) {
-                selectedquestion.style.display = 'block';
-            }
+    <div class="questions">
+      <form id="quiz-form" method="POST">
+        {% for question in questions %}
+        
+        <div class="allquestion" id="question-{{ loop.index }}"
+             {% if loop.index == 1 %} style="display: block;" {% else %} style="display: none;" {% endif %}>
+          <h2>Q.{{ loop.index }} {{ question.statement_text }}</h2>
+          {% if question.image_base64 %}
+            <img src="data:image/png;base64,{{ question.image_base64 }}" alt="Question Image" style="width: 800px;height:800px;">
+          {% endif %}
+          {% for option in question.option %}
+          <div>
+            <input type="radio" id="option_{{ option.o_id }}" name="q_{{ question.q_id }}" value="{{ option.o_id }}"
+                   {% if responses and responses.get(question.q_id) == option.o_id %} checked {% endif %}>
+            <label for="option_{{ option.o_id }}">{{ option.statement_text }}</label>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </form>
+      <!-- Save and Next button -->
+      <button class="btn" id="save-next-btn" style="background-color: green;" onclick="saveAndNext()">Save and Next</button>
+    </div>
+
+    <div class="question-no">
+      {% for i in questions %}
+      <button class="box" onclick="showques({{ loop.index }})" id="box-{{ loop.index }}">{{ loop.index }}</button>
+      {% endfor %}
+    </div>
+  </div>
+  <script>
+    function showques(index) { 
+      let allquestions = document.querySelectorAll('.allquestion');
+      allquestions.forEach(q => q.style.display = 'none');
+      let selectedquestion = document.getElementById('question-' + index);
+      if (selectedquestion) {
+        selectedquestion.style.display = 'block';
+      }
+    }
+  
+    function submitQuiz() {
+      let m_id = "{{ quiz.m_id }}";
+      // Remove the timer only when quiz is submitted.
+      sessionStorage.removeItem("quiz_{{ quiz.m_id }}_time");
+      let submitUrl = `/student/submit_quiz/${m_id}`;
+      window.location.href = submitUrl;
+    }
+  
+    function saveAndNext() {
+      let currentQuestion = Array.from(document.querySelectorAll('.allquestion'))
+                            .find(el => el.style.display === 'block');
+      if (!currentQuestion) return;
+      let currentIndex = parseInt(currentQuestion.id.split('-')[1]);
+      let radioName = currentQuestion.querySelector('input[type="radio"]').name;
+      let q_id = radioName.split('_')[1];
+      let selectedOption = currentQuestion.querySelector('input[name="'+radioName+'"]:checked');
+  
+      if (!selectedOption) {
+        alert("Please select an option before proceeding.");
+        return;
+      }
+      
+      let selected_o_id = selectedOption.value;
+      let formData = new FormData();
+      formData.append("q_id", q_id);
+      formData.append("selected_o_id", selected_o_id);
+      
+      fetch("/student/save_response", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          document.getElementById("box-" + currentIndex).classList.add("answered");
+          let nextQuestion = document.getElementById("question-" + (currentIndex + 1));
+          if (nextQuestion) {
+            showques(currentIndex + 1);
+          } else {
+            alert("You have reached the end of the quiz.");
+          }
+        } else if (data.error) {
+          alert("Error: " + data.error);
         }
-
-        function submitQuiz() {
-            let m_id = "{{ quiz.m_id }}";
-            let u_id = "{{ user.u_id }}";
-            let submitUrl = `/submit_quiz/${m_id}/${u_id}`;
-
-            // Redirect to the Flask route to submit
-            window.location.href = submitUrl;
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            let totalTime = {{ quiz.duration }} * 60;
-            let remainingTime = sessionStorage.getItem("quiz_{{ quiz.m_id }}_time");
-
-            if (!remainingTime) {
-                remainingTime = totalTime;
-                sessionStorage.setItem("quiz_{{ quiz.m_id }}_time", remainingTime);
-            } else {
-                remainingTime = parseInt(remainingTime, 10);
-            }
-
-            function updateTimerDisplay(seconds) {
-                let minutes = Math.floor(seconds / 60);
-                let secs = seconds % 60;
-                document.getElementById("timer").textContent = `Time Left: ${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-            }
-
-            function startTimer() {
-                let timer = setInterval(function () {
-                    if (remainingTime <= 0) {
-                        clearInterval(timer);
-                        sessionStorage.removeItem("quiz_{{ quiz.m_id }}_time");
-                        alert("Time's up! Your quiz will be submitted automatically.");
-                        submitQuiz();  // Calls Flask route
-                    } else {
-                        remainingTime--;
-                        sessionStorage.setItem("quiz_{{ quiz.m_id }}_time", remainingTime);
-                        updateTimerDisplay(remainingTime);
-                    }
-                }, 1000);
-            }
-
-            document.getElementById("submit-btn").addEventListener("click", submitQuiz);
-
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred while saving your response.");
+      });
+    }
+  
+    document.addEventListener("DOMContentLoaded", function () {
+      let totalTime = {{ quiz.duration }} * 60;
+      let storedTime = sessionStorage.getItem("quiz_{{ quiz.m_id }}_time");
+      let remainingTime = storedTime ? parseInt(storedTime, 10) : totalTime;
+      
+      // Store timer if not already stored.
+      if (!storedTime) {
+        sessionStorage.setItem("quiz_{{ quiz.m_id }}_time", remainingTime);
+      }
+  
+      function updateTimerDisplay(seconds) {
+        let minutes = Math.floor(seconds / 60);
+        let secs = seconds % 60;
+        document.getElementById("timer").textContent = `Time Left: ${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+      }
+  
+      function startTimer() {
+        let timer = setInterval(function () {
+          if (remainingTime <= 0) {
+            clearInterval(timer);
+            sessionStorage.removeItem("quiz_{{ quiz.m_id }}_time");
+            alert("Time's up! Your quiz will be submitted automatically.");
+            submitQuiz();
+          } else {
+            remainingTime--;
+            sessionStorage.setItem("quiz_{{ quiz.m_id }}_time", remainingTime);
             updateTimerDisplay(remainingTime);
-            startTimer();
-        });
-    </script>
-
+          }
+        }, 1000);
+      }
+  
+      document.getElementById("submit-btn").addEventListener("click", submitQuiz);
+      updateTimerDisplay(remainingTime);
+      startTimer();
+    });
+  </script>
+  
 </body>
 </html>

@@ -1,8 +1,8 @@
 from werkzeug.security import generate_password_hash
+from flask_login import UserMixin
 from extension import db
 
-
-class User(db.Model):
+class User(db.Model,UserMixin):
     __tablename__ ="user"
     id = db.Column(db.Integer,primary_key=True,autoincrement =True)
     Email = db.Column(db.String(20),unique=True,nullable = False)
@@ -53,6 +53,7 @@ class Mock(db.Model):
     total_marks = db.Column(db.Float)
     no_of_ques = db.Column(db.Integer)
     remarks = db.Column(db.String(100))
+    live = db.Column(db.Boolean(10),default = False)
     
     questions = db.relationship('Question',backref='mock', lazy=True)
     
@@ -63,10 +64,7 @@ class Question(db.Model):
     statement_text = db.Column(db.String(50))
     statement_pic_name = db.Column(db.String(50))
     statement_pic = db.Column(db.LargeBinary)
-    statement_type = db.Column(db.String(10))
-    o_id = db.Column(db.Integer)
     marks = db.Column(db.Float)
-    neg_marking = db.Column(db.Float)
     
     option = db.relationship('Options',backref='questions')
     
@@ -75,12 +73,8 @@ class Options(db.Model):
     q_id = db.Column(db.Integer,db.ForeignKey('question.q_id'))
     o_id = db.Column(db.Integer,primary_key=True,autoincrement =True)
     statement_text = db.Column(db.String(50))
-    statement_pic_name = db.Column(db.String(50))
-    statement_pic = db.Column(db.LargeBinary)
-    statement_type = db.Column(db.String(10))
     correctness = db.Column(db.Boolean(10),default = False)
-    
-    
+      
 class Response(db.Model):
     __tablename__ = "response"
     r_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -102,6 +96,7 @@ class scores(db.Model):
     positive_score = db.Column(db.Integer)
     time_req = db.Column(db.Integer)
     remark = db.Column(db.String(100))
+    
     
 def create_database():
 

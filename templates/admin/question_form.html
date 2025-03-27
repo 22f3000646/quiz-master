@@ -140,28 +140,36 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-<form method="POST">
-    <fieldset>
-        <legend>Add New Question</legend>
-        <label for="statement">Statement:</label>
-        <textarea name="statement" required></textarea>
-
-        <label for="negative_marking">Negative Marking:</label>
-        <input type="number" name="negative_marking" step="0.1" value="0">
-
-        <label for="marks">Marks:</label>
-        <input type="number" name="marks" step="0.1" required>
-
-        <button type="submit">Add Question</button>
-    </fieldset>
-</form>
-
-<h3>Added Questions</h3>
-{% for question in questions %}
+    <form method="POST" enctype="multipart/form-data">
+        <fieldset>
+            <legend>Add New Question</legend>
+            <label for="statement">Statement:</label>
+            <textarea name="statement" required></textarea>
+    
+            <label for="statement_pic">Upload Image:</label>
+            <input type="file" name="statement_pic" accept="image/*">
+    
+    
+            <label for="marks">Marks:</label>
+            <input type="number" name="marks" step="0.1" required>
+    
+            <button type="submit">Add Question</button>
+        </fieldset>
+    </form>
+    
+    <h3>Added Questions</h3>
+    {% for question in questions %}
     <div class="question-box">
-        <form action="{{ url_for('admin.edit_question', que_id=question.q_id) }}" method="POST">
+        {% if question.image_base64 %}
+            <img src="data:image/png;base64,{{ question.image_base64 }}" alt="Question Image" width="200">
+        {% endif %}
+
+        <form action="{{ url_for('admin.edit_question',que_id=question.q_id) }}" method="POST" enctype="multipart/form-data">
             <label for="statement_{{ question.q_id }}"><strong>Q{{ loop.index }}:</strong></label>
             <textarea name="statement" required>{{ question.statement_text }}</textarea>
+
+            <label for="statement_pic">Change Image:</label>
+            <input type="file" name="statement_pic" accept="image/*">
 
             <label for="negative_marking_{{ question.q_id }}">Negative Marking:</label>
             <input type="number" name="negative_marking" step="0.1" value="{{ question.neg_marking }}" required>
@@ -172,15 +180,14 @@
             <button type="submit">Update Question</button>
         </form>
 
-        <!-- Delete Question -->
-        <form action="{{ url_for('admin.delete_question',que_id=question.q_id) }}"method="POST" style="display:inline;">
+        <form action="{{ url_for('admin.delete_question', que_id=question.q_id) }}" method="POST" style="display:inline;">
             <button type="submit">Delete</button>
         </form>
 
-        <!-- Manage Options -->
-        <a href="{{ url_for('admin.manage_options',que_id=question.q_id) }}">Manage Options</a>
+        <a href="{{ url_for('admin.manage_options', que_id=question.q_id) }}">Manage Options</a>
     </div>
 {% endfor %}
+    
 
 
 {% endblock %}

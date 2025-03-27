@@ -39,6 +39,6 @@ with app.app_context():
             for score in user_scores
         ])
 
-# Run the app only if executed directly
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz Details</title>
+  <link href="{{ url_for('static', filename='stylesheet.css') }}" rel="stylesheet">
+  <style>
+    body {
+      background-color: #000;
+      color: #D2B48C;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      width: 90%;
+      margin: 20px auto;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #D2B48C;
+    }
+    .chart-container {
+      width: 50%;
+      margin: 20px auto;
+    }
+    .question {
+      border: 1px solid #D2B48C;
+      margin: 20px 0;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .option {
+      padding: 5px;
+      margin: 5px 0;
+    }
+    .correct {
+      color: #00FF00; /* green for correct answer */
+    }
+    .user-selected {
+      border: 1px dashed #FF4500; /* red/orange outline */
+      padding: 3px;
+    }
+    .back-btn {
+      display: block;
+      width: 150px;
+      margin: 20px auto;
+      padding: 10px;
+      background-color: #8B4513;
+      color: white;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      border-radius: 4px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Quiz Details</h1>
+    <h2>Quiz ID: {{ quiz.m_id }} | Score: {{ score.score }}</h2>
+    
+    <!-- Chart.js canvas -->
+    <div class="chart-container">
+      <canvas id="comparisonChart"></canvas>
+    </div>
+    
+    {% for q in questions %}
+    <div class="question">
+      <p><strong>Q{{ loop.index }}: {{ q.statement_text }}</strong></p>
+      <ul>
+        {% for opt in q.options %}
+        <li class="option
+          {% if opt.correctness %} correct {% endif %}
+          {% if q.user_selected and q.user_selected == opt.o_id %} user-selected {% endif %}">
+          {{ opt.statement_text }}
+          {% if opt.correctness %} (Correct Answer) {% endif %}
+          {% if q.user_selected and q.user_selected == opt.o_id %} (Your Choice) {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+    
+    <a href="{{ url_for('user_blueprint.scores_view') }}" class="back-btn">Back to Scores</a>
+  </div>
+  
+  <script
+src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+
+  <script>
+    // Prepare data for Chart.js using variables passed from the view function:
+    // 'avg_marks' is the average marks for this quiz and 'user_marks' is the current user's marks.
+    const avgMarks = {{ avg_marks }};
+    const userMarks = {{ user_marks }};
+    
+    const ctx = document.getElementById('comparisonChart').getContext('2d');
+    const comparisonChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Average Marks', 'Your Marks'],
+        datasets: [{
+          label: 'Marks Comparison',
+          data: [avgMarks, userMarks],
+          backgroundColor: ['rgba(139, 69, 19, 0.7)', 'rgba(210, 180, 140, 0.7)'],
+          borderColor: ['#8B4513', '#D2B48C'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#D2B48C'
+            }
+          },
+          x: {
+            ticks: {
+              color: '#D2B48C'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: '#D2B48C'
+            }
+          }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  </script>
+</body>
+</html>

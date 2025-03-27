@@ -3,6 +3,7 @@ from forms import *
 from config import SECRET_KEY
 from werkzeug.security import generate_password_hash,check_password_hash
 app= Flask(__name__)
+from flask_login import login_user,LoginManager,logout_user,login_required,current_user
 from routes import user_blueprint
 from admin import admin
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///quizmaster.db"
@@ -10,6 +11,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 from extension import db
 from models import User,Student_details,create_database
 db.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login' 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))  
 from flask_migrate import Migrate
 migrate = Migrate(app,db)
 app.register_blueprint(user_blueprint,url_prefix="/student")
@@ -18,20 +25,25 @@ app.config['SECRET_KEY'] = SECRET_KEY
 @app.route('/')
 def home():
     return render_template('index.html')
+
 @app.route('/login',methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:  
+        if current_user.role == "admin":  
+            return redirect(url_for('admin.dashboard')) 
+        return redirect(url_for('user_blueprint.dashboard'))  
     form = LoginForm()
     if form.validate_on_submit():
         email = form.email.data
         password = form.password.data
         user = User.query.filter_by(Email=email).first()
         if user and check_password_hash(user.password,password):
-            session['user'] = user.Email
+            login_user(user)
             if user.role=="admin":
                 return redirect(url_for('admin.dashboard'))
             return redirect(url_for('user_blueprint.dashboard'))
         else:
-            flash("incorrect password !",'unsuccess')
+            flash("incorrect username or password !",'unsuccess')
             return render_template('login.html',form=form)
             
     return render_template('login.html',form=form)
@@ -60,9 +72,10 @@ def registration():
         return redirect(url_for('login'))
     return render_template('registration.html',form = form)
 
+@login_required
 @app.route('/logout')
 def logout():
-    session.pop('user',None)
+    logout_user()
     return redirect(url_for('login'))
 
 if __name__=="__main__":

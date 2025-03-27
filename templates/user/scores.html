@@ -3,70 +3,116 @@
 {% block title %}Results{% endblock %}
 
 {% block content %}
-<style>
-    .quiz {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-        justify-content: center;
+  <style>
+    body {
+      background-color: #000;
+      color: #D2B48C; /* light brown */
+      font-family: Arial, sans-serif;
     }
-    .quiz-card {
-        border: 1px solid #ddd;
-        padding: 15px;
-        border-radius: 10px;
-        background: #f9f9f9;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
+    .container {
+      width: 90%;
+      margin: 20px auto;
     }
-    .quiz-card h3 {
-        margin-bottom: 10px;
+    h1 {
+      text-align: center;
+      color: #D2B48C;
     }
-    .quiz-card button {
-        background-color: green;
-        color: white;
-        padding: 8px 12px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
     }
-</style>
-{% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-<h1 style="text-align:center;">Your Quiz Results</h1>
-<form method="GET" action="{{ url_for('user_blueprint.result') }}">
-    <label for="time_filter">Show results from:</label>
-    <select name="time_filter">
-        <option value="all">All Time</option>
-        <option value="7">Last 7 Days</option>
-        <option value="30">Last 30 Days</option>
-    </select>
-    <button type="submit">Filter</button>
-</form>
-
-{% if quiz_results %}
-<div class="quiz">
-    {% for result in quiz_results %}
-    <div class="quiz-card">
-        <h3>Quiz ID: {{ result.quiz_id }}</h3>
-        <p><strong>Number of Questions:</strong> {{ result.num_questions }}</p>
-        <p><strong>Date:</strong> {{ result.date.strftime('%d/%m/%Y') }}</p>
-        <p><strong>Duration:</strong> {{ result.duration }} mins</p>
-        <p><strong>Marks Obtained:</strong> {{ result.marks_obtained }}</p>
-        <p><strong>Total Marks:</strong> {{ result.total_marks }}</p>
-        <p><strong>Remarks:</strong> {{ result.remark or "N/A" }}</p>
-        < a href="{{url_for('user_blueprint.responsed',q_id=result.quiz_id)}}" <button>See Answers</button>
+    table, th, td {
+      border: 1px solid #D2B48C;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    .btn {
+      padding: 8px 16px;
+      background-color: #8B4513; /* brown */
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .btn:hover {
+      background-color: #A0522D;
+    }
+    /* Chart container */
+    #chart-container {
+      width: 80%;
+      margin: 0 auto 40px;
+    }
+  </style>
+  <div class="container">
+    <h1>Quiz Score Summary</h1>
+    
+    <!-- Chart.js Canvas -->
+    <div id="chart-container">
+      <canvas id="scoreChart"></canvas>
     </div>
-    {% endfor %}
-</div>
-{% else %}
-    <p style="text-align:center;">No quiz results available.</p>
-{% endif %}
+    
+    <!-- Scores Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>Quiz ID</th>
+          <th>Score</th>
+          <th>Remark</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in scores %}
+        <tr>
+          <td>{{ s.m_id }}</td>
+          <td>{{ s.score }}</td>
+          <td>{{ s.remark }}</td>
+          <td>
+            <a href="{{ url_for('user_blueprint.score_details', sc_id=s.sc_id) }}">
+              <button class="btn">View Details</button>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Chart.js script -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>></script>
+  
+  <script>
+    // Prepare chart data using values passed from Flask
+    const quizLabels = {{ quiz_labels | safe }}; 
+    const quizScores = {{ quiz_scores | safe }}; 
+
+    const ctx = document.getElementById('scoreChart').getContext('2d');
+    const scoreChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: quizLabels,
+        datasets: [{
+          label: 'Score',
+          data: quizScores,
+          backgroundColor: '#8B4513',
+          borderColor: '#D2B48C',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  </script>
+
 
 {% endblock %}

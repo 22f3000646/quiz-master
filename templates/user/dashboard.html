@@ -232,8 +232,8 @@ canvas {
     {% endwith %}
     <nav>
         <a href="/student/dashboard"> Home </a>
-        <a href="/student/result"> Results </a>
-        <a href="#"> summary </a>
+        <a href="{{url_for('user_blueprint.scores_view')}}"> Results </a>
+        
         <a href="{{url_for('logout')}}"> Log out </a>
         <hr>
     </nav>
@@ -242,7 +242,7 @@ canvas {
     <div class="profile">
         <div style="display:inline-block;" >
         <div class="profile-pic"><img src="data:image/jpeg;base64,{{ image }}"></div>
-        <div class="primary-btn" style="padding:10px; width:120px;" >Edit profile</div>
+        <div class="primary-btn" style="padding:10px; width:120px;" >Your profile</div>
     </div>
         <p>
             Name:{{user.full_name}}
@@ -263,7 +263,7 @@ canvas {
     <div class="graph-section">
         <h3>Quiz Performances</h3>
         <canvas id="quizChart"></canvas>
-        <a href="/summary" class="summary-link">View Detailed Summary</a>
+        <a href="#" class="summary-link">View Detailed Summary</a>
     </div>
     <div class="search-bar">
     <p style="font-size:30px;font-style:italic;color:#e5e7eb;">Welcome Back, {{ customer_name }}</p>
@@ -287,6 +287,7 @@ canvas {
                 {% endfor %}
             </select>
         </div>
+
     
         <input type="text" name="query" placeholder="Search quiz" style="width: 450px;">
         <button type="submit" class="primary-btn">Search</button>
@@ -304,11 +305,11 @@ canvas {
             <div><strong>Total Marks:</strong>{{quiz.total_marks}}</div>
             <div><strong>Total Questions:</strong>{{quiz.no_of_ques}}</div>
             <div><strong>Duration:</strong> {{quiz.duration}}</div>
-            <button class="btn" style="display:inline-block;margin:15px;"  onclick="openwarning()">start Test</button>
+            <button class="btn" style="display:inline-block;margin:15px;"  onclick="openwarning('{{ quiz.m_id }}')">start Test</button>
             </div>
      
 
-    <div id="starttest" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
+    <div id="starttest{{quiz.m_id}}" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
              background:white; padding:20px; border-radius:10px; box-shadow:0px 0px 10px rgba(0,0,0,0.2);color:black;">
              <div class="warning">
                 <h1>Instructions to candidate</h1>
@@ -319,43 +320,42 @@ canvas {
                 <p>5.Duration of examination is <strong>{{quiz.duration}}</strong> minutes.</p>
             </div>
                 <p style="margin-left:10px;">Are you sure to continue the examination ?</p>
-                <button class="primary-btn"style='display:inline-block; width:300px; font-size:25px;margin-bottom:15px;margin-left:10px;background-color:green;'onclick="closewarning()">GO back</button>
+                <button class="primary-btn"style='display:inline-block; width:300px; font-size:25px;margin-bottom:15px;margin-left:10px;background-color:green;'onclick="closewarning('{{ quiz.m_id }}')">GO back</button>
                 <a href="{{url_for('user_blueprint.start_test',qid=quiz.m_id,sid=user.u_id)}}"> <button class="primary-btn"style="background-color:red; display:inline-block; width:300px;font-size:25px; margin-bottom:15px;">start</button></a>
             </div>
 </div>
 {% endfor %}
 {% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('quizChart').getContext('2d');
+    <script>const ctx = document.getElementById('quizChart').getContext('2d');
         const quizChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Attempted', 'Total Marks'],
-                datasets: [{
-                    label: 'Score Percentage',
-                    data: [75, 90], // Replace these with dynamic values
-                    backgroundColor: ['#007bff', '#28a745'],
-                    borderColor: ['#0056b3', '#218838'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100
-                    }
-                }
+          type: 'bar',
+          data: {
+            labels: ['Attempted percentage'],
+            datasets: [{
+              label: 'Total attempted',
+              data: [{{ attempted_count }}], // Dynamic value passed from Flask
+              backgroundColor: ['#007bff'],
+              borderColor: ['#0056b3'],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100
+              }
             }
+          }
         });
-    </script>
+      </script>
     <script>
-        function openwarning(){
-            document.getElementById("starttest").style.display = "block";
+        function openwarning(id){
+            document.getElementById("starttest"+id).style.display = "block";
         }
-        function closewarning(){
-            document.getElementById("starttest").style.display = "none";
+        function closewarning(id){
+            document.getElementById("starttest"+id).style.display = "none";
         }
     </script>
     
