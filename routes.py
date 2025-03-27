@@ -134,7 +134,7 @@ def scores_view():
 def score_details(sc_id):
     score_record = scores.query.get_or_404(sc_id)
     quiz = Mock.query.get(score_record.m_id)
-    user = User.query.filter_by(Email=session['user']).first()
+    user = current_user
     student = Student_details.query.filter_by(u_id=user.id).first()
     avg_marks = db.session.query(func.avg(scores.score)).filter(scores.m_id == quiz.m_id).scalar() or 0
     questions_data = []
